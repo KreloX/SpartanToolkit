@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "spartantwilight.refmap.json",
   "mixins": [
+    "ExistingFileHelperMixin",
     "HeavyCrossbowItemMixin",
     "ItemStackMixin",
     "LongbowItemMixin",
