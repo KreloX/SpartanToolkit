@@ -1,4 +1,4 @@
-package krelox.spartanaddontoolkit;
+package krelox.spartantoolkit;
 
 import com.oblivioussp.spartanweaponry.api.WeaponMaterial;
 import com.oblivioussp.spartanweaponry.api.tags.ModWeaponTraitTags;

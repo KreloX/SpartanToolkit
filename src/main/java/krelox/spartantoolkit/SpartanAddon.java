@@ -1,4 +1,4 @@
-package krelox.spartanaddontoolkit;
+package krelox.spartantoolkit;
 
 import com.oblivioussp.spartanweaponry.api.data.model.ModelGenerator;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;

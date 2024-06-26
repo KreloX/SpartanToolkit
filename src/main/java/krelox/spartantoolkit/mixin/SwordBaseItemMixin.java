@@ -1,7 +1,7 @@
-package krelox.spartanaddontoolkit.mixin;
+package krelox.spartantoolkit.mixin;
 
 import com.oblivioussp.spartanweaponry.item.SwordBaseItem;
-import krelox.spartanaddontoolkit.WeaponItem;
+import krelox.spartantoolkit.WeaponItem;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(SwordBaseItem.class)

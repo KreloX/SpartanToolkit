@@ -1,4 +1,4 @@
-package krelox.spartanaddontoolkit.mixin;
+package krelox.spartantoolkit.mixin;
 
 import com.oblivioussp.spartanweaponry.ModSpartanWeaponry;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;

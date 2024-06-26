@@ -1,4 +1,4 @@
-package krelox.spartanaddontoolkit;
+package krelox.spartantoolkit;
 
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.world.item.Item;

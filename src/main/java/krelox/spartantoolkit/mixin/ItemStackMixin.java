@@ -1,7 +1,7 @@
-package krelox.spartanaddontoolkit.mixin;
+package krelox.spartantoolkit.mixin;
 
-import krelox.spartanaddontoolkit.SpartanAddon;
-import krelox.spartanaddontoolkit.WeaponItem;
+import krelox.spartantoolkit.SpartanAddon;
+import krelox.spartantoolkit.WeaponItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
