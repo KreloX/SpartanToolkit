@@ -63,7 +63,7 @@ public abstract class SpartanAddon {
         weapons.forEach((key, item) -> key.second().createModel.apply(generator, item.get()));
     }
 
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildCraftingRecipes(RecipeProvider provider, Consumer<FinishedRecipe> consumer) {
         weapons.forEach((key, item) -> key.second().recipe.accept(weapons, consumer, key.first()));
     }
 
@@ -101,7 +101,7 @@ public abstract class SpartanAddon {
         generator.addProvider(new RecipeProvider(generator) {
             @Override
             protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-                SpartanAddon.this.buildCraftingRecipes(consumer);
+                SpartanAddon.this.buildCraftingRecipes(this, consumer);
             }
         });
     }
