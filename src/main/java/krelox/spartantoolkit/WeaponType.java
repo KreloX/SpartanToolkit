@@ -21,6 +21,8 @@ import java.util.function.Consumer;
 public enum WeaponType {
     DAGGER(ModItemTags.DAGGERS, SpartanWeaponryAPI::createDagger, ModelGenerator::createDaggerModels, (map, consumer, material) ->
             RecipeProviderHelper.recipeDagger(consumer, material.getHandle(), material.material.getRepairTag(), map.get(Pair.of(material, valueOf("DAGGER"))).get(), "has_item")),
+    PARRYING_DAGGER(ModItemTags.PARRYING_DAGGERS, SpartanWeaponryAPI::createParryingDagger, ModelGenerator::createParryingDaggerModels, (map, consumer, material) ->
+            RecipeProviderHelper.recipeParryingDagger(consumer, material.getHandle(), material.material.getRepairTag(), map.get(Pair.of(material, valueOf("PARRYING_DAGGER"))).get(), "has_item")),
     LONGSWORD(ModItemTags.LONGSWORDS, SpartanWeaponryAPI::createLongsword, ModelGenerator::createLongswordModel, (map, consumer, material) ->
             RecipeProviderHelper.recipeLongsword(consumer, material.getHandle(), material.material.getRepairTag(), map.get(Pair.of(material, valueOf("LONGSWORD"))).get(), "has_item")),
     KATANA(ModItemTags.KATANAS, SpartanWeaponryAPI::createKatana, ModelGenerator::createKatanaModel, (map, consumer, material) ->
@@ -64,9 +66,7 @@ public enum WeaponType {
     QUARTERSTAFF(ModItemTags.QUARTERSTAVES, SpartanWeaponryAPI::createQuarterstaff, ModelGenerator::createQuarterstaffModel, (map, consumer, material) ->
             RecipeProviderHelper.recipeQuarterstaff(consumer, material.getPole(), material.material.getRepairTag(), map.get(Pair.of(material, valueOf("QUARTERSTAFF"))).get(), "has_item")),
     SCYTHE(ModItemTags.SCYTHES, SpartanWeaponryAPI::createScythe, ModelGenerator::createScytheModel, (map, consumer, material) ->
-            RecipeProviderHelper.recipeScythe(consumer, material.getPole(), material.material.getRepairTag(), map.get(Pair.of(material, valueOf("SCYTHE"))).get(), "has_item")),
-    PARRYING_DAGGER(ModItemTags.PARRYING_DAGGERS, SpartanWeaponryAPI::createParryingDagger, ModelGenerator::createParryingDaggerModels, (map, consumer, material) ->
-            RecipeProviderHelper.recipeParryingDagger(consumer, material.getHandle(), material.material.getRepairTag(), map.get(Pair.of(material, valueOf("PARRYING_DAGGER"))).get(), "has_item"));
+            RecipeProviderHelper.recipeScythe(consumer, material.getPole(), material.material.getRepairTag(), map.get(Pair.of(material, valueOf("SCYTHE"))).get(), "has_item"));
 
     public final TagKey<Item> tag;
     public final BiFunction<WeaponMaterial, CreativeModeTab, Item> createItem;

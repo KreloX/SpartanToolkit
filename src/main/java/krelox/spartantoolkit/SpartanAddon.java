@@ -29,14 +29,15 @@ import java.util.stream.Collectors;
 
 public abstract class SpartanAddon {
     protected final HashMap<RegistryObject<WeaponTrait>, String> traitDescriptions = new HashMap<>();
+    private final Set<SpartanMaterial> materials = getMaterials();
 
-    protected final void registerSpartanWeapons(DeferredRegister<Item> itemRegister) {
+    protected final void registerSpartanWeapons(DeferredRegister<Item> items) {
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        for (SpartanMaterial material : getMaterials()) {
-            for (WeaponType type : WeaponType.values()) {
+        for (WeaponType type : WeaponType.values()) {
+            for (SpartanMaterial material : materials) {
                 String name = material.material.getMaterialName() + "_" + type.toString().toLowerCase();
-                var item = itemRegister.register(name, () -> type.createItem.apply(material.material, getTab()));
+                var item = items.register(name, () -> type.createItem.apply(material.material, getTab()));
                 getWeaponMap().put(Pair.of(material, type), item);
             }
         }
@@ -56,8 +57,8 @@ public abstract class SpartanAddon {
     }
 
     protected void addTranslations(LanguageProvider provider, Function<RegistryObject<?>, String> formatName) {
-        provider.add("itemGroup." + modid(), ModList.get().getMods().stream().filter(mod ->
-                mod.getModId().equals(modid())).findFirst().get().getDisplayName());
+        ModList.get().getModContainerById(modid()).ifPresent(mod ->
+                provider.add("itemGroup." + modid(), mod.getModInfo().getDisplayName() + " Materials"));
 
         getWeaponMap().values().forEach(item -> provider.add(item.get(), formatName.apply(item)));
 
@@ -91,7 +92,7 @@ public abstract class SpartanAddon {
         generator.addProvider(new ModWeaponTraitTagsProvider(generator, fileHelper) {
             @Override
             protected void addTags() {
-                getMaterials().forEach(material -> tag(material.material.getTraitsTag()).add(material.traits.stream().map(RegistryObject::get).toArray(WeaponTrait[]::new)));
+                materials.forEach(material -> tag(material.material.getTraitsTag()).add(material.traits.stream().map(RegistryObject::get).toArray(WeaponTrait[]::new)));
             }
         });
         generator.addProvider(new ItemTagsProvider(generator, new BlockTagsProvider(generator, modid(), fileHelper), modid(), fileHelper) {
