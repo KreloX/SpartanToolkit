@@ -58,7 +58,7 @@ public abstract class SpartanAddon {
 
     protected void addTranslations(LanguageProvider provider, Function<RegistryObject<?>, String> formatName) {
         ModList.get().getModContainerById(modid()).ifPresent(mod ->
-                provider.add("itemGroup." + modid(), mod.getModInfo().getDisplayName() + " Materials"));
+                provider.add("itemGroup." + modid(), mod.getModInfo().getDisplayName()));
 
         getWeaponMap().values().forEach(item -> provider.add(item.get(), formatName.apply(item)));
 
