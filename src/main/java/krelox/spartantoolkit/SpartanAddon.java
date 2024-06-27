@@ -22,14 +22,14 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class SpartanAddon {
     protected final HashMap<RegistryObject<WeaponTrait>, String> traitDescriptions = new HashMap<>();
-    private final Set<SpartanMaterial> materials = getMaterials();
+    private final List<SpartanMaterial> materials = getMaterials();
 
     protected final void registerSpartanWeapons(DeferredRegister<Item> items) {
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -117,7 +117,7 @@ public abstract class SpartanAddon {
 
     public abstract String modid();
 
-    public abstract Set<SpartanMaterial> getMaterials();
+    public abstract List<SpartanMaterial> getMaterials();
 
     public abstract CreativeModeTab getTab();
 
