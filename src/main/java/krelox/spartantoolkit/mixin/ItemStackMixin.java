@@ -29,11 +29,11 @@ public abstract class ItemStackMixin implements IForgeItemStack {
                 if (modContainer.getMod() instanceof SpartanAddon addon) {
                     for (var material : addon.getMaterials()) {
                         if (weapon.getMaterial().equals(material.material)) {
-                            for (var enchantment : material.enchantments) {
-                                if (canApplyAtEnchantingTable(enchantment.first().get())) {
-                                    enchant(enchantment.first().get(), enchantment.second());
+                            material.enchantments.forEach((enchantment, integer) -> {
+                                if (canApplyAtEnchantingTable(enchantment.get())) {
+                                    enchant(enchantment.get(), integer);
                                 }
-                            }
+                            });
                         }
                     }
                 }
