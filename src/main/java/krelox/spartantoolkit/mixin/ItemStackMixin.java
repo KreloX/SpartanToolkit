@@ -28,7 +28,7 @@ public abstract class ItemStackMixin implements IForgeItemStack {
             ModList.get().forEachModContainer((modid, modContainer) -> {
                 if (modContainer.getMod() instanceof SpartanAddon addon) {
                     for (var material : addon.getMaterials()) {
-                        if (weapon.getMaterial().equals(material.material)) {
+                        if (weapon.getMaterial().equals(material)) {
                             material.enchantments.forEach((enchantment, integer) -> {
                                 if (canApplyAtEnchantingTable(enchantment.get())) {
                                     enchant(enchantment.get(), integer);

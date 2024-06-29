@@ -11,6 +11,7 @@ import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.fml.ModList;
@@ -36,12 +37,21 @@ public abstract class SpartanAddon {
 
         for (WeaponType type : WeaponType.values()) {
             for (SpartanMaterial material : materials) {
-                String name = material.material.getMaterialName() + "_" + type.toString().toLowerCase();
-                var item = items.register(name, () -> type.createItem.apply(material.material, getTab()));
+                String name = material.getMaterialName() + "_" + type.toString().toLowerCase();
+                var item = items.register(name, () -> type.createItem.apply(material, getTab()));
                 getWeaponMap().put(Pair.of(material, type), item);
             }
         }
         bus.addListener(this::generateData);
+    }
+
+    public static CreativeModeTab tab(String label, Item icon) {
+        return new CreativeModeTab(label) {
+            @Override
+            public ItemStack makeIcon() {
+                return new ItemStack(icon);
+            }
+        };
     }
 
     public static DeferredRegister<Item> itemRegister(String modid) {
@@ -92,7 +102,7 @@ public abstract class SpartanAddon {
         generator.addProvider(new ModWeaponTraitTagsProvider(generator, fileHelper) {
             @Override
             protected void addTags() {
-                materials.forEach(material -> tag(material.material.getTraitsTag()).add(material.traits.stream().map(RegistryObject::get).toArray(WeaponTrait[]::new)));
+                materials.forEach(material -> tag(material.getTraitsTag()).add(material.traits.stream().map(RegistryObject::get).toArray(WeaponTrait[]::new)));
             }
         });
         generator.addProvider(new ItemTagsProvider(generator, new BlockTagsProvider(generator, modid(), fileHelper), modid(), fileHelper) {
