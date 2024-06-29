@@ -13,20 +13,20 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class SpartanMaterial extends WeaponMaterial {
     public final Set<RegistryObject<WeaponTrait>> traits;
-    public final Map<Lazy<Enchantment>, Integer> enchantments;
+    public final Map<Supplier<Enchantment>, Integer> enchantments;
     @Deprecated(forRemoval = true)
     public final WeaponMaterial material = this;
 
     public SpartanMaterial(String name, String modid, Tier tier,
-                           TagKey<Item> repairMaterial, Set<RegistryObject<WeaponTrait>> traits, Map<Lazy<Enchantment>, Integer> enchantments) {
+                           TagKey<Item> repairMaterial, Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
         super(name, modid, tier, repairMaterial, ModWeaponTraitTags.create(new ResourceLocation(modid, name)));
         this.traits = traits;
         this.enchantments = enchantments;
