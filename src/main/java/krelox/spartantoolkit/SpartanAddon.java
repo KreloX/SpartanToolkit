@@ -21,29 +21,33 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public abstract class SpartanAddon {
+    @Deprecated(forRemoval = true)
     protected final HashMap<RegistryObject<WeaponTrait>, String> traitDescriptions = new HashMap<>();
-    private final List<SpartanMaterial> materials = getMaterials();
+    protected final List<SpartanMaterial> materials = getMaterials();
 
     protected final void registerSpartanWeapons(DeferredRegister<Item> items) {
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
 
         for (WeaponType type : WeaponType.values()) {
             for (SpartanMaterial material : materials) {
-                String name = material.getMaterialName() + "_" + type.toString().toLowerCase();
-                var item = items.register(name, () -> type.createItem.apply(material, getTab()));
-                getWeaponMap().put(Pair.of(material, type), item);
+                if (getBlacklist().contains(Pair.of(material, type))) continue;
+                registerSpartanWeapon(items, material, type);
             }
         }
         bus.addListener(this::generateData);
+    }
+
+    protected final void registerSpartanWeapon(DeferredRegister<Item> items, SpartanMaterial material, WeaponType type) {
+        String name = material.getMaterialName() + "_" + type.toString().toLowerCase();
+        var item = items.register(name, () -> type.createItem.apply(material, getTab()));
+        getWeaponMap().put(material, type, item);
     }
 
     public static CreativeModeTab tab(String label, Supplier<Item> icon) {
@@ -73,7 +77,7 @@ public abstract class SpartanAddon {
 
         getWeaponMap().values().forEach(item -> provider.add(item.get(), formatName.apply(item)));
 
-        traitDescriptions.forEach((trait, description) -> {
+        getTraitDescriptions().forEach((trait, description) -> {
             provider.add("tooltip.%s.trait.%s".formatted(modid(), trait.get().getType()), formatName.apply(trait));
             provider.add("tooltip.%s.trait.%s.desc".formatted(modid(), trait.get().getType()), description);
         });
@@ -92,11 +96,13 @@ public abstract class SpartanAddon {
         var fileHelper = event.getExistingFileHelper();
 
         generator.addProvider(new LanguageProvider(generator, modid(), "en_us") {
+            private static final Set<String> ROMAN_NUMERALS = Set.of("i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x");
+
             @Override
             protected void addTranslations() {
                 SpartanAddon.this.addTranslations(this, registryObject ->
                         Arrays.stream(registryObject.getId().getPath().replace("_heavy", "-Strengthened_heavy").split("_"))
-                                .map(name -> name.substring(0, 1).toUpperCase() + name.substring(1))
+                                .map(name -> ROMAN_NUMERALS.contains(name) ? name.toUpperCase() : name.substring(0, 1).toUpperCase() + name.substring(1))
                                 .collect(Collectors.joining(" ")));
             }
         });
@@ -124,6 +130,14 @@ public abstract class SpartanAddon {
                 SpartanAddon.this.buildCraftingRecipes(consumer);
             }
         });
+    }
+
+    protected Set<Pair<SpartanMaterial, WeaponType>> getBlacklist() {
+        return Set.of();
+    }
+
+    protected Map<RegistryObject<WeaponTrait>, String> getTraitDescriptions() {
+        return traitDescriptions;
     }
 
     public abstract String modid();
