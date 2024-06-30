@@ -5,13 +5,17 @@ import com.oblivioussp.spartanweaponry.api.data.model.ModelGenerator;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
 import com.oblivioussp.spartanweaponry.data.ModWeaponTraitTagsProvider;
 import it.unimi.dsi.fastutil.Pair;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.fml.ModList;
@@ -69,6 +73,14 @@ public abstract class SpartanAddon {
 
     public static RegistryObject<WeaponTrait> registerTrait(DeferredRegister<WeaponTrait> traitRegister, WeaponTrait trait) {
         return traitRegister.register(trait.getType(), () -> trait);
+    }
+
+    protected static TriggerInstance has(ItemLike itemLike) {
+        return TriggerInstance.hasItems(ItemPredicate.Builder.item().of(itemLike).build());
+    }
+
+    protected static TriggerInstance has(TagKey<Item> tag) {
+        return TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tag).build());
     }
 
     protected void addTranslations(LanguageProvider provider, Function<RegistryObject<?>, String> formatName) {
