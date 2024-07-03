@@ -127,7 +127,8 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
-        url "https://cursemaven.com"
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
     }
 }
 
@@ -135,18 +136,18 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    implementation fg.deobf("curse.maven:spartanweaponry-278141:5011992")
+    implementation fg.deobf("maven.modrinth:spartan-weaponry:${spartan_weaponry_version}")
 }
 
 tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
-            minecraft_version      : minecraft_version, minecraft_version_range: minecraft_version_range,
-            forge_version          : forge_version, forge_version_range: forge_version_range,
-            loader_version_range   : loader_version_range,
-            spartan_weaponry_version_range: spartan_weaponry_version_range,
-            mod_id                 : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-            mod_issue_tracker      : mod_issue_tracker, mod_homepage: mod_homepage, mod_credits: mod_credits,
-            mod_authors            : mod_authors, mod_description: mod_description, pack_format_number: pack_format_number,
+            minecraft_version       : minecraft_version, minecraft_version_range: minecraft_version_range,
+            forge_version           : forge_version, forge_version_range: forge_version_range,
+            loader_version_range    : loader_version_range,
+            spartan_weaponry_version: spartan_weaponry_version,
+            mod_id                  : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_issue_tracker       : mod_issue_tracker, mod_homepage: mod_homepage, mod_credits: mod_credits,
+            mod_authors             : mod_authors, mod_description: mod_description, pack_format_number: pack_format_number,
     ]
     inputs.properties replaceProperties
 

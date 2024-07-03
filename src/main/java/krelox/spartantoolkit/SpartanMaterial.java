@@ -22,8 +22,6 @@ import java.util.function.Supplier;
 public class SpartanMaterial extends WeaponMaterial {
     public final Set<RegistryObject<WeaponTrait>> traits;
     public final Map<Supplier<Enchantment>, Integer> enchantments;
-    @Deprecated(forRemoval = true)
-    public final WeaponMaterial material = this;
 
     public SpartanMaterial(String name, String modid, Tier tier,
                            TagKey<Item> repairMaterial, Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {

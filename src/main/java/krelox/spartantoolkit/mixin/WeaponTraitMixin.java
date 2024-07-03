@@ -14,7 +14,7 @@ public class WeaponTraitMixin {
 
     @ModifyArg(
             method = "initTooltipTypes",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/TranslatableComponent;<init>(Ljava/lang/String;)V"),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;"),
             index = 0
     )
     private String formatTooltip(String original) {

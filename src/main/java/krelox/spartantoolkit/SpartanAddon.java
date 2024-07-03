@@ -7,6 +7,7 @@ import com.oblivioussp.spartanweaponry.data.ModWeaponTraitTagsProvider;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -18,9 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -32,8 +33,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public abstract class SpartanAddon {
-    @Deprecated(forRemoval = true)
-    protected final HashMap<RegistryObject<WeaponTrait>, String> traitDescriptions = new HashMap<>();
     protected final List<SpartanMaterial> materials = getMaterials();
 
     protected final void registerSpartanWeapons(DeferredRegister<Item> items) {
@@ -45,7 +44,7 @@ public abstract class SpartanAddon {
                 registerSpartanWeapon(items, material, type);
             }
         }
-        bus.addListener(this::generateData);
+        bus.addListener(this::gatherData);
     }
 
     protected final void registerSpartanWeapon(DeferredRegister<Item> items, SpartanMaterial material, WeaponType type) {
@@ -103,11 +102,14 @@ public abstract class SpartanAddon {
         getWeaponMap().forEach((key, item) -> key.second().recipe.accept(getWeaponMap(), consumer, key.first()));
     }
 
-    public void generateData(GatherDataEvent event) {
+    public void gatherData(GatherDataEvent event) {
         var generator = event.getGenerator();
         var fileHelper = event.getExistingFileHelper();
 
-        generator.addProvider(new LanguageProvider(generator, modid(), "en_us") {
+        Consumer<DataProvider> client = provider -> generator.addProvider(event.includeClient(), provider);
+        Consumer<DataProvider> server = provider -> generator.addProvider(event.includeServer(), provider);
+
+        client.accept(new LanguageProvider(generator, modid(), "en_us") {
             private static final Set<String> ROMAN_NUMERALS = Set.of("i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x");
 
             @Override
@@ -118,25 +120,26 @@ public abstract class SpartanAddon {
                                 .collect(Collectors.joining(" ")));
             }
         });
-        generator.addProvider(new ModWeaponTraitTagsProvider(generator, fileHelper) {
-            @Override
-            protected void addTags() {
-                materials.forEach(material -> tag(material.getTraitsTag()).add(material.traits.stream().map(RegistryObject::get).toArray(WeaponTrait[]::new)));
-            }
-        });
-        generator.addProvider(new ItemTagsProvider(generator, new BlockTagsProvider(generator, modid(), fileHelper), modid(), fileHelper) {
-            @Override
-            protected void addTags() {
-                getWeaponMap().forEach((key, item) -> tag(key.second().tag).add(item.get()));
-            }
-        });
-        generator.addProvider(new ItemModelProvider(generator, modid(), fileHelper) {
+        client.accept(new ItemModelProvider(generator, modid(), fileHelper) {
             @Override
             protected void registerModels() {
                 SpartanAddon.this.registerModels(this, new ModelGenerator(this));
             }
         });
-        generator.addProvider(new RecipeProvider(generator) {
+
+        server.accept(new ModWeaponTraitTagsProvider(generator, fileHelper) {
+            @Override
+            protected void addTags() {
+                materials.forEach(material -> tag(material.getTraitsTag()).add(material.traits.stream().map(RegistryObject::get).toArray(WeaponTrait[]::new)));
+            }
+        });
+        server.accept(new ItemTagsProvider(generator, new BlockTagsProvider(generator, modid(), fileHelper), modid(), fileHelper) {
+            @Override
+            protected void addTags() {
+                getWeaponMap().forEach((key, item) -> tag(key.second().tag).add(item.get()));
+            }
+        });
+        server.accept(new RecipeProvider(generator) {
             @Override
             protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
                 SpartanAddon.this.buildCraftingRecipes(consumer);
@@ -149,7 +152,7 @@ public abstract class SpartanAddon {
     }
 
     protected Map<RegistryObject<WeaponTrait>, String> getTraitDescriptions() {
-        return traitDescriptions;
+        return new HashMap<>();
     }
 
     public abstract String modid();
