@@ -4,6 +4,7 @@ import com.oblivioussp.spartanweaponry.api.WeaponTraits;
 import com.oblivioussp.spartanweaponry.api.data.model.ModelGenerator;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
 import com.oblivioussp.spartanweaponry.data.ModWeaponTraitTagsProvider;
+import com.oblivioussp.spartanweaponry.init.ModCreativeTabs;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -84,6 +85,8 @@ public abstract class SpartanAddon {
                 .icon(() -> icon.get().getDefaultInstance())
                 .title(Component.translatable("itemGroup." + label))
                 .displayItems(displayItemsGenerator)
+                .withTabsBefore(ModCreativeTabs.MODDED.getId())
+                .withTabsAfter(ModCreativeTabs.ARROWS_BOLTS.getId())
                 .build());
     }
 
@@ -108,7 +111,7 @@ public abstract class SpartanAddon {
             provider.add("tooltip.%s.trait.%s.desc".formatted(modid(), trait.get().getType()), description);
         });
     }
-    
+
     @SuppressWarnings("unused")
     protected void registerModels(ItemModelProvider provider, ModelGenerator generator) {
         getWeaponMap().forEach((key, item) -> key.second().createModel.apply(generator, item.get()));
