@@ -8,12 +8,12 @@ import com.oblivioussp.spartanweaponry.api.tags.ModItemTags;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public enum WeaponType {
     DAGGER(ModItemTags.DAGGERS, SpartanWeaponryAPI::createDagger, ModelGenerator::createDaggerModels, (map, consumer, material) ->
@@ -66,11 +66,11 @@ public enum WeaponType {
             RecipeProviderHelper.recipeScythe(consumer, material.getPole(), material.getRepairTag(), map.get(material, valueOf("SCYTHE")).get(), "has_" + material.getMaterialName()));
 
     public final TagKey<Item> tag;
-    public final BiFunction<WeaponMaterial, CreativeModeTab, Item> createItem;
+    public final Function<WeaponMaterial, Item> createItem;
     public final BiFunction<ModelGenerator, Item, ResourceLocation> createModel;
     public final TriConsumer<WeaponMap, Consumer<FinishedRecipe>, SpartanMaterial> recipe;
 
-    WeaponType(TagKey<Item> tag, BiFunction<WeaponMaterial, CreativeModeTab, Item> createItem, BiFunction<ModelGenerator, Item, ResourceLocation> createModel, TriConsumer<WeaponMap, Consumer<FinishedRecipe>, SpartanMaterial> recipe) {
+    WeaponType(TagKey<Item> tag, Function<WeaponMaterial, Item> createItem, BiFunction<ModelGenerator, Item, ResourceLocation> createModel, TriConsumer<WeaponMap, Consumer<FinishedRecipe>, SpartanMaterial> recipe) {
         this.tag = tag;
         this.createItem = createItem;
         this.createModel = createModel;

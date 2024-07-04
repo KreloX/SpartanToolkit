@@ -7,17 +7,19 @@ import com.oblivioussp.spartanweaponry.data.ModWeaponTraitTagsProvider;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.ModList;
@@ -25,6 +27,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -35,6 +38,7 @@ import java.util.stream.Collectors;
 public abstract class SpartanAddon {
     protected final List<SpartanMaterial> materials = getMaterials();
 
+    @SuppressWarnings("unused")
     protected final void registerSpartanWeapons(DeferredRegister<Item> items) {
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -49,35 +53,46 @@ public abstract class SpartanAddon {
 
     protected final void registerSpartanWeapon(DeferredRegister<Item> items, SpartanMaterial material, WeaponType type) {
         String name = material.getMaterialName() + "_" + type.toString().toLowerCase();
-        var item = items.register(name, () -> type.createItem.apply(material, getTab()));
+        var item = items.register(name, () -> type.createItem.apply(material));
         getWeaponMap().put(material, type, item);
     }
 
-    public static CreativeModeTab tab(String label, Supplier<Item> icon) {
-        return new CreativeModeTab(label) {
-            @Override
-            public ItemStack makeIcon() {
-                return new ItemStack(icon.get());
-            }
-        };
-    }
-
+    @SuppressWarnings("unused")
     public static DeferredRegister<Item> itemRegister(String modid) {
         return DeferredRegister.create(ForgeRegistries.ITEMS, modid);
     }
 
+    @SuppressWarnings("unused")
     public static DeferredRegister<WeaponTrait> traitRegister(String modid) {
         return DeferredRegister.create(WeaponTraits.REGISTRY_KEY, modid);
     }
 
+    @SuppressWarnings("unused")
     public static RegistryObject<WeaponTrait> registerTrait(DeferredRegister<WeaponTrait> traitRegister, WeaponTrait trait) {
         return traitRegister.register(trait.getType(), () -> trait);
     }
 
+    @SuppressWarnings("unused")
+    public static DeferredRegister<CreativeModeTab> tabRegister(String modid) {
+        return DeferredRegister.create(Registries.CREATIVE_MODE_TAB, modid);
+    }
+
+    @SuppressWarnings("unused")
+    public static RegistryObject<CreativeModeTab> registerTab(DeferredRegister<CreativeModeTab> tabs, String label, Supplier<Item> icon,
+                                                              CreativeModeTab.DisplayItemsGenerator displayItemsGenerator) {
+        return tabs.register(label, () -> CreativeModeTab.builder()
+                .icon(() -> icon.get().getDefaultInstance())
+                .title(Component.translatable("itemGroup." + label))
+                .displayItems(displayItemsGenerator)
+                .build());
+    }
+
+    @SuppressWarnings("unused")
     protected static TriggerInstance has(ItemLike itemLike) {
         return TriggerInstance.hasItems(ItemPredicate.Builder.item().of(itemLike).build());
     }
 
+    @SuppressWarnings("unused")
     protected static TriggerInstance has(TagKey<Item> tag) {
         return TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tag).build());
     }
@@ -93,7 +108,8 @@ public abstract class SpartanAddon {
             provider.add("tooltip.%s.trait.%s.desc".formatted(modid(), trait.get().getType()), description);
         });
     }
-
+    
+    @SuppressWarnings("unused")
     protected void registerModels(ItemModelProvider provider, ModelGenerator generator) {
         getWeaponMap().forEach((key, item) -> key.second().createModel.apply(generator, item.get()));
     }
@@ -105,11 +121,13 @@ public abstract class SpartanAddon {
     public void gatherData(GatherDataEvent event) {
         var generator = event.getGenerator();
         var fileHelper = event.getExistingFileHelper();
+        var packOutput = generator.getPackOutput();
+        var lookupProvider = event.getLookupProvider();
 
         Consumer<DataProvider> client = provider -> generator.addProvider(event.includeClient(), provider);
         Consumer<DataProvider> server = provider -> generator.addProvider(event.includeServer(), provider);
 
-        client.accept(new LanguageProvider(generator, modid(), "en_us") {
+        client.accept(new LanguageProvider(packOutput, modid(), "en_us") {
             private static final Set<String> ROMAN_NUMERALS = Set.of("i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x");
 
             @Override
@@ -120,28 +138,32 @@ public abstract class SpartanAddon {
                                 .collect(Collectors.joining(" ")));
             }
         });
-        client.accept(new ItemModelProvider(generator, modid(), fileHelper) {
+        client.accept(new ItemModelProvider(packOutput, modid(), fileHelper) {
             @Override
             protected void registerModels() {
                 SpartanAddon.this.registerModels(this, new ModelGenerator(this));
             }
         });
 
-        server.accept(new ModWeaponTraitTagsProvider(generator, fileHelper) {
+        server.accept(new ModWeaponTraitTagsProvider(packOutput, lookupProvider, fileHelper) {
             @Override
-            protected void addTags() {
+            protected void addTags(HolderLookup.Provider registry) {
                 materials.forEach(material -> tag(material.getTraitsTag()).add(material.traits.stream().map(RegistryObject::get).toArray(WeaponTrait[]::new)));
             }
         });
-        server.accept(new ItemTagsProvider(generator, new BlockTagsProvider(generator, modid(), fileHelper), modid(), fileHelper) {
+        server.accept(new ItemTagsProvider(packOutput, lookupProvider, new BlockTagsProvider(packOutput, lookupProvider, modid(), fileHelper) {
             @Override
-            protected void addTags() {
+            protected void addTags(@NotNull HolderLookup.Provider provider) {
+            }
+        }.contentsGetter(), modid(), fileHelper) {
+            @Override
+            protected void addTags(@NotNull HolderLookup.Provider provider) {
                 getWeaponMap().forEach((key, item) -> tag(key.second().tag).add(item.get()));
             }
         });
-        server.accept(new RecipeProvider(generator) {
+        server.accept(new RecipeProvider(packOutput) {
             @Override
-            protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+            protected void buildRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
                 SpartanAddon.this.buildCraftingRecipes(consumer);
             }
         });
@@ -158,8 +180,6 @@ public abstract class SpartanAddon {
     public abstract String modid();
 
     public abstract List<SpartanMaterial> getMaterials();
-
-    public abstract CreativeModeTab getTab();
 
     public abstract WeaponMap getWeaponMap();
 }
