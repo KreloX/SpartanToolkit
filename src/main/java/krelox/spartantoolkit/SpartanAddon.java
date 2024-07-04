@@ -154,11 +154,13 @@ public abstract class SpartanAddon {
                 materials.forEach(material -> tag(material.getTraitsTag()).add(material.traits.stream().map(RegistryObject::get).toArray(WeaponTrait[]::new)));
             }
         });
-        server.accept(new ItemTagsProvider(packOutput, lookupProvider, new BlockTagsProvider(packOutput, lookupProvider, modid(), fileHelper) {
+        var blockTags = new BlockTagsProvider(packOutput, lookupProvider, modid(), fileHelper) {
             @Override
             protected void addTags(@NotNull HolderLookup.Provider provider) {
             }
-        }.contentsGetter(), modid(), fileHelper) {
+        };
+        server.accept(blockTags);
+        server.accept(new ItemTagsProvider(packOutput, lookupProvider, blockTags.contentsGetter(), modid(), fileHelper) {
             @Override
             protected void addTags(@NotNull HolderLookup.Provider provider) {
                 getWeaponMap().forEach((key, item) -> tag(key.second().tag).add(item.get()));
