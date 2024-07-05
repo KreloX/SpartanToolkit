@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "krelox.spartantoolkit.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "spartantwilight.refmap.json",
+  "refmap": "spartantoolkit.refmap.json",
   "mixins": [
     "ExistingFileHelperMixin",
     "HeavyCrossbowItemMixin",
