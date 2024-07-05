@@ -13,12 +13,14 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider.IntrinsicTagAppender;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -117,6 +119,14 @@ public abstract class SpartanAddon {
         getWeaponMap().forEach((key, item) -> key.second().createModel.apply(generator, item.get()));
     }
 
+    @SuppressWarnings("unused")
+    protected void addBlockTags(BlockTagsProvider provider, Function<TagKey<Block>, IntrinsicTagAppender<Block>> tag) {
+    }
+
+    @SuppressWarnings("unused")
+    protected void addItemTags(ItemTagsProvider provider, Function<TagKey<Item>, IntrinsicTagAppender<Item>> tag) {
+    }
+
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         getWeaponMap().forEach((key, item) -> key.second().recipe.accept(getWeaponMap(), consumer, key.first()));
     }
@@ -157,6 +167,7 @@ public abstract class SpartanAddon {
         var blockTags = new BlockTagsProvider(packOutput, lookupProvider, modid(), fileHelper) {
             @Override
             protected void addTags(@NotNull HolderLookup.Provider provider) {
+                addBlockTags(this, this::tag);
             }
         };
         server.accept(blockTags);
@@ -164,12 +175,13 @@ public abstract class SpartanAddon {
             @Override
             protected void addTags(@NotNull HolderLookup.Provider provider) {
                 getWeaponMap().forEach((key, item) -> tag(key.second().tag).add(item.get()));
+                addItemTags(this, this::tag);
             }
         });
         server.accept(new RecipeProvider(packOutput) {
             @Override
             protected void buildRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
-                SpartanAddon.this.buildCraftingRecipes(consumer);
+                buildCraftingRecipes(consumer);
             }
         });
     }
