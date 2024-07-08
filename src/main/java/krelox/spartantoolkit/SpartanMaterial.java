@@ -27,9 +27,6 @@ public class SpartanMaterial extends WeaponMaterial {
     public SpartanMaterial(String name, String modid, Tier tier,
                            TagKey<Item> repairMaterial, Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
         super(name, modid, tier, repairMaterial, ModWeaponTraitTags.create(new ResourceLocation(modid, name)));
-        if (traits.stream().map(RegistryObject::get).filter(WeaponTrait::isActionTrait).count() > 1) {
-            throw new IllegalArgumentException("Material '%s:%s' has more than one action trait".formatted(modid, name));
-        }
         this.traits = traits;
         this.enchantments = enchantments;
     }
