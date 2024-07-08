@@ -2,22 +2,45 @@ package krelox.spartantoolkit.mixin;
 
 import com.oblivioussp.spartanweaponry.ModSpartanWeaponry;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
+import krelox.spartantoolkit.IBetterWeaponTrait;
+import krelox.spartantoolkit.WeaponItem;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.List;
 
 @Mixin(WeaponTrait.class)
-public class WeaponTraitMixin {
+public class WeaponTraitMixin implements IBetterWeaponTrait {
     @Shadow(remap = false)
     protected String modId;
 
+    @Inject(
+            method = "addTooltip(Lnet/minecraft/world/item/ItemStack;Ljava/util/List;ZLcom/oblivioussp/spartanweaponry/api/trait/WeaponTrait$InvalidReason;)V",
+            at = @At("HEAD"),
+            cancellable = true,
+            remap = false
+    )
+    private void spartantoolkit_addTooltip(ItemStack stack, List<Component> tooltip, boolean isShiftPressed, WeaponTrait.InvalidReason invalidReason, CallbackInfo ci) {
+        if (!isEnabled(((WeaponItem) stack.getItem()).getMaterial(), stack)) {
+            ci.cancel();
+        }
+    }
+
     @ModifyArg(
             method = "initTooltipTypes",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;"),
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;"
+            ),
             index = 0
     )
-    private String formatTooltip(String original) {
+    private String spartantoolkit_fixModId(String original) {
         return original.replace(modId, ModSpartanWeaponry.ID);
     }
 }

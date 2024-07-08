@@ -10,11 +10,14 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public class ModelGeneratorMixin {
     @ModifyArg(
             method = "createMeleeWeaponModels",
-            at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/model/generators/ItemModelBuilder;texture(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/client/model/generators/ModelBuilder;"),
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraftforge/client/model/generators/ItemModelBuilder;texture(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/client/model/generators/ModelBuilder;"
+            ),
             index = 1,
             remap = false
     )
-    private String injectTexture(String texture) {
+    private String spartantoolkit_injectTexture(String texture) {
         if (!texture.contains("item/coating/")) return texture;
         return ModSpartanWeaponry.ID + ":" + texture;
     }
