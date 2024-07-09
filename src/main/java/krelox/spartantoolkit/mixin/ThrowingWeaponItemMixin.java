@@ -81,7 +81,8 @@ public abstract class ThrowingWeaponItemMixin extends Item implements WeaponItem
             method = "appendHoverText",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/oblivioussp/spartanweaponry/api/WeaponMaterial;hasAnyBonusTraits()Z"
+                    target = "Lcom/oblivioussp/spartanweaponry/api/WeaponMaterial;hasAnyBonusTraits()Z",
+                    remap = false
             )
     )
     private boolean spartantoolkit_appendHoverText(WeaponMaterial material, ItemStack stack) {
