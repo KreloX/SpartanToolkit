@@ -11,6 +11,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.Optional;
+
 public class BetterWeaponTrait extends WeaponTrait implements IBetterWeaponTrait, IMeleeTraitCallback, IThrowingTraitCallback, IRangedTraitCallback, IActionTraitCallback {
     @SuppressWarnings("unused")
     public BetterWeaponTrait(String typeIn, String modIdIn, TraitQuality qualityIn) {
@@ -46,5 +48,29 @@ public class BetterWeaponTrait extends WeaponTrait implements IBetterWeaponTrait
     @Override
     public InteractionResultHolder<ItemStack> use(ItemStack stack, Level level, Player player, InteractionHand hand) {
         return InteractionResultHolder.pass(stack);
+    }
+
+    @Override
+    public Optional<IMeleeTraitCallback> getMeleeCallback() {
+        if (isMelee) return Optional.of(this);
+        return super.getMeleeCallback();
+    }
+
+    @Override
+    public Optional<IRangedTraitCallback> getRangedCallback() {
+        if (isRanged) return Optional.of(this);
+        return super.getRangedCallback();
+    }
+
+    @Override
+    public Optional<IThrowingTraitCallback> getThrowingCallback() {
+        if (isThrowing) return Optional.of(this);
+        return super.getThrowingCallback();
+    }
+
+    @Override
+    public Optional<IActionTraitCallback> getActionCallback() {
+        if (isAction) return Optional.of(this);
+        return super.getActionCallback();
     }
 }
