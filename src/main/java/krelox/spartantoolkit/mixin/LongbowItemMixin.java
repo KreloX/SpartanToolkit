@@ -67,11 +67,12 @@ public class LongbowItemMixin extends BowItem implements WeaponItem {
             method = "appendHoverText",
             at = @At(
                     value = "INVOKE",
-                    target = "Ljava/util/List;isEmpty()Z"
+                    target = "Lcom/oblivioussp/spartanweaponry/api/WeaponMaterial;hasAnyBonusTraits()Z",
+                    remap = false
             )
     )
-    private boolean spartantoolkit_appendHoverText(List<WeaponTrait> rangedTraits, ItemStack stack) {
-        return rangedTraits.stream().anyMatch(trait -> ((IBetterWeaponTrait) trait).isEnabled(material, stack));
+    private boolean spartantoolkit_appendHoverText(WeaponMaterial material, ItemStack stack) {
+        return material.hasAnyBonusTraits() && rangedTraits.stream().anyMatch(trait -> ((IBetterWeaponTrait) trait).isEnabled(material, stack));
     }
 
     @Inject(method = "getNockProgress", at = @At("HEAD"), remap = false)
