@@ -23,6 +23,13 @@ import java.util.function.Supplier;
 public class SpartanMaterial extends WeaponMaterial {
     public final Set<RegistryObject<WeaponTrait>> traits;
     public final Map<Supplier<Enchantment>, Integer> enchantments;
+    private Rarity rarity = Rarity.COMMON;
+    private TagKey<Item> planks = ItemTags.PLANKS;
+    private TagKey<Item> stick = Tags.Items.RODS_WOODEN;
+    private TagKey<Item> string = Tags.Items.STRING;
+    private ItemLike bow = Items.BOW;
+    private ItemLike handle = ModItems.HANDLE.get();
+    private ItemLike pole = ModItems.POLE.get();
 
     public SpartanMaterial(String name, String modid, Tier tier,
                            TagKey<Item> repairMaterial, Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
@@ -38,31 +45,73 @@ public class SpartanMaterial extends WeaponMaterial {
         this(name, modid, tier, repairMaterial, Set.of(traits), Map.of());
     }
 
+    @SuppressWarnings("unused")
+    public SpartanMaterial setRarity(Rarity rarity) {
+        this.rarity = rarity;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setPlanks(TagKey<Item> planks) {
+        this.planks = planks;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setStick(TagKey<Item> stick) {
+        this.stick = stick;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setString(TagKey<Item> string) {
+        this.string = string;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setBow(ItemLike bow) {
+        this.bow = bow;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setHandle(ItemLike handle) {
+        this.handle = handle;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setPole(ItemLike pole) {
+        this.pole = pole;
+        return this;
+    }
+
     public Rarity getRarity() {
-        return Rarity.COMMON;
+        return rarity;
     }
 
     public TagKey<Item> getPlanks() {
-        return ItemTags.PLANKS;
+        return planks;
     }
 
     public TagKey<Item> getStick() {
-        return Tags.Items.RODS_WOODEN;
+        return stick;
     }
 
     public TagKey<Item> getString() {
-        return Tags.Items.STRING;
+        return string;
     }
 
     public ItemLike getBow() {
-        return Items.BOW;
+        return bow;
     }
 
     public ItemLike getHandle() {
-        return ModItems.HANDLE.get();
+        return handle;
     }
 
     public ItemLike getPole() {
-        return ModItems.POLE.get();
+        return pole;
     }
 }
