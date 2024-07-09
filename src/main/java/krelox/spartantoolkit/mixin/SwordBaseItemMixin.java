@@ -86,6 +86,17 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
     }
 
     @Redirect(
+            method = "appendHoverText",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/oblivioussp/spartanweaponry/api/WeaponMaterial;hasAnyBonusTraits()Z"
+            )
+    )
+    private boolean spartantoolkit_appendHoverText(WeaponMaterial material, ItemStack stack) {
+        return material.hasAnyBonusTraits() && material.getBonusTraits().stream().anyMatch(trait -> ((IBetterWeaponTrait) trait).isEnabled(material, stack));
+    }
+
+    @Redirect(
             method = "hurtEnemy",
             at = @At(
                     value = "INVOKE",

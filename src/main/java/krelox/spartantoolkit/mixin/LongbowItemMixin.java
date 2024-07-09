@@ -63,6 +63,17 @@ public class LongbowItemMixin extends BowItem implements WeaponItem {
                 .ifPresent(callback -> drawTime = callback.modifyLongbowDrawTime(material, drawTime)), stack);
     }
 
+    @Redirect(
+            method = "appendHoverText",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/util/List;isEmpty()Z"
+            )
+    )
+    private boolean spartantoolkit_appendHoverText(List<WeaponTrait> rangedTraits, ItemStack stack) {
+        return rangedTraits.stream().anyMatch(trait -> ((IBetterWeaponTrait) trait).isEnabled(material, stack));
+    }
+
     @Inject(method = "getNockProgress", at = @At("HEAD"), remap = false)
     private void spartantoolkit_getNockProgress(ItemStack stack, LivingEntity shooter, CallbackInfoReturnable<Float> cir) {
         drawTime = 1.25f;

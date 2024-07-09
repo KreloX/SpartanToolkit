@@ -6,6 +6,7 @@ import com.oblivioussp.spartanweaponry.api.WeaponMaterial;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
 import com.oblivioussp.spartanweaponry.item.ThrowingWeaponItem;
 import com.oblivioussp.spartanweaponry.util.WeaponArchetype;
+import krelox.spartantoolkit.IBetterWeaponTrait;
 import krelox.spartantoolkit.SpartanMaterial;
 import krelox.spartantoolkit.WeaponItem;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -74,6 +75,17 @@ public abstract class ThrowingWeaponItemMixin extends Item implements WeaponItem
     )
     private void spartantoolkit_inventoryTick(List<WeaponTrait> traits, Consumer<WeaponTrait> consumer, ItemStack stack) {
         triggerEnabledTraits(traits, consumer, stack);
+    }
+
+    @Redirect(
+            method = "appendHoverText",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/oblivioussp/spartanweaponry/api/WeaponMaterial;hasAnyBonusTraits()Z"
+            )
+    )
+    private boolean spartantoolkit_appendHoverText(WeaponMaterial material, ItemStack stack) {
+        return material.hasAnyBonusTraits() && material.getBonusTraits().stream().anyMatch(trait -> ((IBetterWeaponTrait) trait).isEnabled(material, stack));
     }
 
     @Redirect(
