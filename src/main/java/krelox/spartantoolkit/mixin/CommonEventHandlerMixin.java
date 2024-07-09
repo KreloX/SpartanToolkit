@@ -16,14 +16,26 @@ import java.util.Optional;
 public class CommonEventHandlerMixin {
     @Redirect(
             method = "onLivingHurt",
-            at = @At(value = "INVOKE", target = "Ljava/util/Optional;isPresent()Z"),
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;isPresent()Z", ordinal = 0),
             remap = false
     )
     @SuppressWarnings("DataFlowIssue")
-    private static boolean spartantoolkit_onLivingHurt(Optional<IMeleeTraitCallback> opt, LivingHurtEvent event) {
+    private static boolean spartantoolkit_onLivingHurtDealt(Optional<IMeleeTraitCallback> opt, LivingHurtEvent event) {
         var attacker = (LivingEntity) event.getSource().getEntity();
         var attackerStack = attacker.getMainHandItem();
         var container = (IWeaponTraitContainer<?>) attackerStack.getItem();
         return opt.isPresent() && ((IBetterWeaponTrait) opt.get()).isEnabled(container.getMaterial(), attackerStack);
+    }
+
+    @Redirect(
+            method = "onLivingHurt",
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;isPresent()Z", ordinal = 1),
+            remap = false
+    )
+    private static boolean spartantoolkit_onLivingHurtTaken(Optional<IMeleeTraitCallback> opt, LivingHurtEvent event) {
+        var target = (LivingEntity) event.getEntity();
+        var targetStack = target.getMainHandItem();
+        var container = (IWeaponTraitContainer<?>) targetStack.getItem();
+        return opt.isPresent() && ((IBetterWeaponTrait) opt.get()).isEnabled(container.getMaterial(), targetStack);
     }
 }

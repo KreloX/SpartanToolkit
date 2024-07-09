@@ -1,7 +1,6 @@
 package krelox.spartantoolkit;
 
 import com.oblivioussp.spartanweaponry.api.WeaponMaterial;
-import com.oblivioussp.spartanweaponry.api.trait.IActionTraitCallback;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
 import com.oblivioussp.spartanweaponry.item.SwordBaseItem;
 import net.minecraft.world.damagesource.DamageSource;
@@ -27,7 +26,7 @@ public interface IBetterWeaponTrait {
 
     @SuppressWarnings("unused")
     default boolean isEnabled(WeaponMaterial material, ItemStack stack) {
-        return !(this instanceof IActionTraitCallback)
+        return !((WeaponTrait) this).isActionTrait()
                 || !(stack.getItem() instanceof SwordBaseItem item)
                 || item.getAllWeaponTraits().stream().filter(trait -> !trait.equals(this)).noneMatch(WeaponTrait::isActionTrait);
     }

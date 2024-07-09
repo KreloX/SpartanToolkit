@@ -4,19 +4,15 @@ import com.oblivioussp.spartanweaponry.api.IWeaponTraitContainer;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod(SpartanToolkit.MODID)
+@Mod.EventBusSubscriber(modid = SpartanToolkit.MODID)
 public class SpartanToolkit {
     public static final String MODID = "spartantoolkit";
-
-    public SpartanToolkit() {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
 
     @SubscribeEvent
     public static void onHitEntity(LivingAttackEvent event) {
