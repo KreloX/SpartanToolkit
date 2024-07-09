@@ -27,9 +27,9 @@ public class SpartanMaterial extends WeaponMaterial {
     private TagKey<Item> planks = ItemTags.PLANKS;
     private TagKey<Item> stick = Tags.Items.RODS_WOODEN;
     private TagKey<Item> string = Tags.Items.STRING;
-    private ItemLike bow = Items.BOW;
-    private ItemLike handle = ModItems.HANDLE.get();
-    private ItemLike pole = ModItems.POLE.get();
+    private Supplier<? extends ItemLike> bow = () -> Items.BOW;
+    private Supplier<? extends ItemLike> handle = ModItems.HANDLE;
+    private Supplier<? extends ItemLike> pole = ModItems.POLE;
 
     public SpartanMaterial(String name, String modid, Tier tier,
                            TagKey<Item> repairMaterial, Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
@@ -70,19 +70,19 @@ public class SpartanMaterial extends WeaponMaterial {
     }
 
     @SuppressWarnings("unused")
-    public SpartanMaterial setBow(ItemLike bow) {
+    public SpartanMaterial setBow(Supplier<? extends ItemLike> bow) {
         this.bow = bow;
         return this;
     }
 
     @SuppressWarnings("unused")
-    public SpartanMaterial setHandle(ItemLike handle) {
+    public SpartanMaterial setHandle(Supplier<? extends ItemLike> handle) {
         this.handle = handle;
         return this;
     }
 
     @SuppressWarnings("unused")
-    public SpartanMaterial setPole(ItemLike pole) {
+    public SpartanMaterial setPole(Supplier<? extends ItemLike> pole) {
         this.pole = pole;
         return this;
     }
@@ -104,14 +104,14 @@ public class SpartanMaterial extends WeaponMaterial {
     }
 
     public ItemLike getBow() {
-        return bow;
+        return bow.get();
     }
 
     public ItemLike getHandle() {
-        return handle;
+        return handle.get();
     }
 
     public ItemLike getPole() {
-        return pole;
+        return pole.get();
     }
 }
