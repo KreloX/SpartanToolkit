@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @Mixin(ThrowingWeaponItem.class)
@@ -101,6 +102,17 @@ public abstract class ThrowingWeaponItemMixin extends Item implements WeaponItem
     }
 
     @Redirect(
+            method = "releaseUsing",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"
+            )
+    )
+    private void spartantoolkit_releaseUsing(List<WeaponTrait> traits, Consumer<WeaponTrait> consumer, ItemStack stack) {
+        triggerEnabledTraits(traits, consumer, stack);
+    }
+
+    @Redirect(
             method = "onCraftedBy",
             at = @At(
                     value = "INVOKE",
@@ -112,14 +124,15 @@ public abstract class ThrowingWeaponItemMixin extends Item implements WeaponItem
     }
 
     @Redirect(
-            method = "releaseUsing",
+            method = "getMaxChargeTicks",
             at = @At(
                     value = "INVOKE",
-                    target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"
-            )
+                    target = "Ljava/util/Optional;isPresent()Z"
+            ),
+            remap = false
     )
-    private void spartantoolkit_releaseUsing(List<WeaponTrait> traits, Consumer<WeaponTrait> consumer, ItemStack stack) {
-        triggerEnabledTraits(traits, consumer, stack);
+    private boolean spartantoolkit_getMaxChargeTicks(Optional<IBetterWeaponTrait> optional, ItemStack stack) {
+        return optional.isPresent() && optional.get().isEnabled(getMaterial(), stack);
     }
 
     @Deprecated
