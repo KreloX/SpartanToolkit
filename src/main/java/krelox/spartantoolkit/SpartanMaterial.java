@@ -16,12 +16,11 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class SpartanMaterial extends WeaponMaterial {
-    public final Set<RegistryObject<WeaponTrait>> traits;
+    public final Collection<RegistryObject<WeaponTrait>> traits;
     public final Map<Supplier<Enchantment>, Integer> enchantments;
     private Rarity rarity = Rarity.COMMON;
     private TagKey<Item> planks = ItemTags.PLANKS;
@@ -32,7 +31,7 @@ public class SpartanMaterial extends WeaponMaterial {
     private Supplier<? extends ItemLike> pole = ModItems.POLE;
 
     public SpartanMaterial(String name, String modid, Tier tier,
-                           TagKey<Item> repairMaterial, Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
+                           TagKey<Item> repairMaterial, Collection<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
         super(name, modid, tier, repairMaterial, ModWeaponTraitTags.create(new ResourceLocation(modid, name)));
         this.traits = traits;
         this.enchantments = enchantments;
@@ -42,7 +41,7 @@ public class SpartanMaterial extends WeaponMaterial {
     @SuppressWarnings("unused")
     public SpartanMaterial(String name, String modid, Tier tier,
                            TagKey<Item> repairMaterial, RegistryObject<WeaponTrait>... traits) {
-        this(name, modid, tier, repairMaterial, Set.of(traits), Map.of());
+        this(name, modid, tier, repairMaterial, List.of(traits), Map.of());
     }
 
     @SuppressWarnings("unused")
