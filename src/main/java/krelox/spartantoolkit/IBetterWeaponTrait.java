@@ -9,6 +9,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
+
 public interface IBetterWeaponTrait {
     default float modifyRangedDamageDealt(WeaponMaterial material, float baseDamage, DamageSource source, LivingEntity attacker, LivingEntity victim) {
         return baseDamage;
@@ -26,8 +28,11 @@ public interface IBetterWeaponTrait {
 
     @SuppressWarnings("unused")
     default boolean isEnabled(WeaponMaterial material, ItemStack stack) {
-        return !((WeaponTrait) this).isActionTrait()
-                || !(stack.getItem() instanceof SwordBaseItem item)
-                || item.getAllWeaponTraits().stream().filter(trait -> !trait.equals(this)).noneMatch(WeaponTrait::isActionTrait);
+        if (((WeaponTrait) this).isActionTrait() && stack.getItem() instanceof SwordBaseItem item) {
+            var traits = new ArrayList<>(item.getAllWeaponTraits());
+            traits.removeAll(material.getBonusTraits());
+            return traits.stream().filter(trait -> !trait.equals(this)).noneMatch(WeaponTrait::isActionTrait);
+        }
+        return false;
     }
 }

@@ -11,6 +11,8 @@ import krelox.spartantoolkit.SpartanMaterial;
 import krelox.spartantoolkit.WeaponItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -20,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -124,6 +127,19 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
     }
 
     @Redirect(
+            method = "useOn",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/SwordItem;useOn(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;"
+            )
+    )
+    private InteractionResult spartantoolkit_useOn(SwordItem item, UseOnContext context) {
+        return getFirstEnabledActionTraitResult(context.getItemInHand(),
+                callback -> callback.useOn(context),
+                () -> item.useOn(context));
+    }
+
+    @Redirect(
             method = "use",
             at = @At(
                     value = "INVOKE",
@@ -136,6 +152,20 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
             return false;
         }
         return optional.get().isEnabled(getMaterial(), player.getItemInHand(hand));
+    }
+
+    @Redirect(
+            method = "use",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/SwordItem;use(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResultHolder;"
+            )
+    )
+    private InteractionResultHolder<ItemStack> spartantoolkit_use(SwordItem item, Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        return getFirstEnabledActionTraitResult(stack,
+                callback -> callback.use(stack, level, player, hand),
+                () -> item.use(level, player, hand));
     }
 
     @Redirect(
@@ -172,11 +202,20 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
             )
     )
     private boolean spartantoolkit_getUseDuration(Optional<IBetterWeaponTrait> optional, ItemStack stack) {
-        if (optional.isEmpty()) {
-            triggerFirstEnabledActionTrait(stack, trait -> trait.getUseDuration(stack));
-            return false;
-        }
-        return optional.get().isEnabled(getMaterial(), stack);
+        return optional.isPresent() && optional.get().isEnabled(getMaterial(), stack);
+    }
+
+    @Redirect(
+            method = "getUseDuration",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/SwordItem;getUseDuration(Lnet/minecraft/world/item/ItemStack;)I"
+            )
+    )
+    private int spartantoolkit_getUseDuration(SwordItem item, ItemStack stack) {
+        return getFirstEnabledActionTraitResult(stack,
+                callback -> callback.getUseDuration(stack),
+                () -> item.getUseDuration(stack));
     }
 
     @Redirect(
@@ -187,11 +226,20 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
             )
     )
     private boolean spartantoolkit_getUseAnimation(Optional<IBetterWeaponTrait> optional, ItemStack stack) {
-        if (optional.isEmpty()) {
-            triggerFirstEnabledActionTrait(stack, trait -> trait.getUseAnimation(stack));
-            return false;
-        }
-        return optional.get().isEnabled(getMaterial(), stack);
+        return optional.isPresent() && optional.get().isEnabled(getMaterial(), stack);
+    }
+
+    @Redirect(
+            method = "getUseAnimation",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/SwordItem;getUseAnimation(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/UseAnim;"
+            )
+    )
+    private UseAnim spartantoolkit_getUseAnimation(SwordItem item, ItemStack stack) {
+        return getFirstEnabledActionTraitResult(stack,
+                callback -> callback.getUseAnimation(stack),
+                () -> item.getUseAnimation(stack));
     }
 
     @Redirect(
@@ -204,11 +252,21 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
     )
     private boolean spartantoolkit_doesSneakBypassUse(Optional<IBetterWeaponTrait> optional, ItemStack stack,
                                                       LevelReader level, BlockPos pos, Player player) {
-        if (optional.isEmpty()) {
-            triggerFirstEnabledActionTrait(stack, trait -> trait.doesSneakBypassUse(stack, level, pos, player));
-            return false;
-        }
-        return optional.get().isEnabled(getMaterial(), stack);
+        return optional.isPresent() && optional.get().isEnabled(getMaterial(), stack);
+    }
+
+    @Redirect(
+            method = "doesSneakBypassUse",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/SwordItem;doesSneakBypassUse(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/player/Player;)Z"
+            ),
+            remap = false
+    )
+    private boolean spartantoolkit_doesSneakBypassUse(SwordItem item, ItemStack stack, LevelReader levelReader, BlockPos blockPos, Player player) {
+        return getFirstEnabledActionTraitResult(stack,
+                callback -> callback.doesSneakBypassUse(stack, levelReader, blockPos, player),
+                () -> item.doesSneakBypassUse(stack, levelReader, blockPos, player));
     }
 
     @Redirect(

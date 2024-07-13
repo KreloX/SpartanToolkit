@@ -9,6 +9,8 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface WeaponItem {
     WeaponMaterial getMaterial();
@@ -34,5 +36,18 @@ public interface WeaponItem {
                     .flatMap(WeaponTrait::getActionCallback)
                     .ifPresent(consumer);
         }
+    }
+
+    default <T> T getFirstEnabledActionTraitResult(ItemStack stack, Function<IActionTraitCallback, T> result, Supplier<T> fallback) {
+        if (getMaterial() instanceof SpartanMaterial material) {
+            return material.getBonusTraits().stream()
+                    .filter(WeaponTrait::isActionTrait)
+                    .filter(trait -> ((IBetterWeaponTrait) trait).isEnabled(getMaterial(), stack))
+                    .findFirst()
+                    .flatMap(WeaponTrait::getActionCallback)
+                    .map(result)
+                    .orElseGet(fallback);
+        }
+        return fallback.get();
     }
 }
