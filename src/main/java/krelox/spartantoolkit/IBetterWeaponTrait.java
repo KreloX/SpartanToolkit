@@ -26,13 +26,12 @@ public interface IBetterWeaponTrait {
     default void onRangedHitEntity(WeaponMaterial material, ItemStack stack, LivingEntity target, LivingEntity attacker, Entity projectile) {
     }
 
-    @SuppressWarnings("unused")
     default boolean isEnabled(WeaponMaterial material, ItemStack stack) {
         if (((WeaponTrait) this).isActionTrait() && stack.getItem() instanceof SwordBaseItem item) {
             var traits = new ArrayList<>(item.getAllWeaponTraits());
             traits.removeAll(material.getBonusTraits());
             return traits.stream().filter(trait -> !trait.equals(this)).noneMatch(WeaponTrait::isActionTrait);
         }
-        return false;
+        return true;
     }
 }
