@@ -109,8 +109,8 @@ public abstract class SpartanAddon {
         getWeaponMap().values().forEach(item -> provider.add(item.get(), formatName.apply(item)));
 
         getTraitDescriptions().forEach((trait, description) -> {
-            provider.add("tooltip.%s.trait.%s".formatted(modid(), trait.get().getType()), formatName.apply(trait));
-            provider.add("tooltip.%s.trait.%s.desc".formatted(modid(), trait.get().getType()), description);
+            provider.add("tooltip.%s.trait.%s".formatted(modid(), trait.getId().getPath()), formatName.apply(trait));
+            provider.add("tooltip.%s.trait.%s.desc".formatted(modid(), trait.getId().getPath()), description);
         });
     }
 
