@@ -136,7 +136,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
     private InteractionResult spartantoolkit_useOn(SwordItem item, UseOnContext context) {
         return getFirstEnabledActionTraitResult(context.getItemInHand(),
                 callback -> callback.useOn(context),
-                () -> item.useOn(context));
+                () -> super.useOn(context));
     }
 
     @Redirect(
@@ -165,7 +165,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
         ItemStack stack = player.getItemInHand(hand);
         return getFirstEnabledActionTraitResult(stack,
                 callback -> callback.use(stack, level, player, hand),
-                () -> item.use(level, player, hand));
+                () -> super.use(level, player, hand));
     }
 
     @Redirect(
@@ -215,7 +215,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
     private int spartantoolkit_getUseDuration(SwordItem item, ItemStack stack) {
         return getFirstEnabledActionTraitResult(stack,
                 callback -> callback.getUseDuration(stack),
-                () -> item.getUseDuration(stack));
+                () -> super.getUseDuration(stack));
     }
 
     @Redirect(
@@ -239,7 +239,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
     private UseAnim spartantoolkit_getUseAnimation(SwordItem item, ItemStack stack) {
         return getFirstEnabledActionTraitResult(stack,
                 callback -> callback.getUseAnimation(stack),
-                () -> item.getUseAnimation(stack));
+                () -> super.getUseAnimation(stack));
     }
 
     @Redirect(
@@ -266,7 +266,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
     private boolean spartantoolkit_doesSneakBypassUse(SwordItem item, ItemStack stack, LevelReader levelReader, BlockPos blockPos, Player player) {
         return getFirstEnabledActionTraitResult(stack,
                 callback -> callback.doesSneakBypassUse(stack, levelReader, blockPos, player),
-                () -> item.doesSneakBypassUse(stack, levelReader, blockPos, player));
+                () -> super.doesSneakBypassUse(stack, levelReader, blockPos, player));
     }
 
     @Redirect(

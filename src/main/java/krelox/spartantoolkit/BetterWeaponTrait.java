@@ -1,7 +1,10 @@
 package krelox.spartantoolkit;
 
 import com.oblivioussp.spartanweaponry.api.WeaponMaterial;
+import com.oblivioussp.spartanweaponry.api.WeaponTraits;
 import com.oblivioussp.spartanweaponry.api.trait.*;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
@@ -10,7 +13,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.RegistryManager;
 
+import java.util.List;
 import java.util.Optional;
 
 public class BetterWeaponTrait extends WeaponTrait implements IBetterWeaponTrait, IMeleeTraitCallback, IThrowingTraitCallback, IRangedTraitCallback, IActionTraitCallback {
@@ -72,5 +77,25 @@ public class BetterWeaponTrait extends WeaponTrait implements IBetterWeaponTrait
     public Optional<IActionTraitCallback> getActionCallback() {
         if (isAction) return Optional.of(this);
         return super.getActionCallback();
+    }
+
+    @Override
+    protected void addTooltipTitle(ItemStack stack, List<Component> tooltip, ChatFormatting... formatting) {
+        if (level == 0) {
+            super.addTooltipTitle(stack, tooltip, formatting);
+            return;
+        }
+        var titleText = Component.literal("- ").withStyle(formatting);
+        tooltip.add(titleText
+                .append(Component.translatable(String.format("tooltip.%s.trait.%s", modId, type)))
+                .append(" ")
+                .append(Component.translatable("enchantment.level." + level)));
+
+    }
+
+    @Override
+    protected void addTooltipDescription(ItemStack stack, List<Component> tooltip) {
+        String registryName = RegistryManager.FROZEN.getRegistry(WeaponTraits.REGISTRY_KEY).getKey(this).getPath();
+        tooltip.add(tooltipIndent().append(Component.translatable(String.format("tooltip.%s.trait.%s.desc", modId, registryName)).withStyle(DESCRIPTION_FORMAT)));
     }
 }

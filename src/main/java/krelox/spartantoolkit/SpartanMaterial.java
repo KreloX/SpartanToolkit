@@ -37,6 +37,12 @@ public class SpartanMaterial extends WeaponMaterial {
         this.enchantments = enchantments;
     }
 
+    @Deprecated(since = "1.4.0", forRemoval = true)
+    public SpartanMaterial(String name, String modid, Tier tier,
+                           TagKey<Item> repairMaterial, Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
+        this(name, modid, tier, repairMaterial, (Collection<RegistryObject<WeaponTrait>>) traits, enchantments);
+    }
+
     @SafeVarargs
     @SuppressWarnings("unused")
     public SpartanMaterial(String name, String modid, Tier tier,

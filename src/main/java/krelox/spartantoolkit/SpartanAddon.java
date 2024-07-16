@@ -30,6 +30,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -72,7 +73,7 @@ public abstract class SpartanAddon {
 
     @SuppressWarnings("unused")
     public static RegistryObject<WeaponTrait> registerTrait(DeferredRegister<WeaponTrait> traitRegister, WeaponTrait trait) {
-        return traitRegister.register(trait.getType(), () -> trait);
+        return traitRegister.register(trait.getType() + (trait.getLevel() == 0 ? "" : "_" + trait.getLevel()), () -> trait);
     }
 
     @SuppressWarnings("unused")
@@ -109,7 +110,7 @@ public abstract class SpartanAddon {
         getWeaponMap().values().forEach(item -> provider.add(item.get(), formatName.apply(item)));
 
         getTraitDescriptions().forEach((trait, description) -> {
-            provider.add("tooltip.%s.trait.%s".formatted(modid(), trait.getId().getPath()), formatName.apply(trait));
+            provider.add("tooltip.%s.trait.%s".formatted(modid(), trait.get().getType()), formatName.apply(trait));
             provider.add("tooltip.%s.trait.%s.desc".formatted(modid(), trait.getId().getPath()), description);
         });
     }
@@ -141,14 +142,22 @@ public abstract class SpartanAddon {
         Consumer<DataProvider> server = provider -> generator.addProvider(event.includeServer(), provider);
 
         client.accept(new LanguageProvider(packOutput, modid(), "en_us") {
-            private static final Set<String> ROMAN_NUMERALS = Set.of("i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x");
-
             @Override
             protected void addTranslations() {
                 SpartanAddon.this.addTranslations(this, registryObject ->
                         Arrays.stream(registryObject.getId().getPath().replace("_heavy", "-Strengthened_heavy").split("_"))
-                                .map(name -> ROMAN_NUMERALS.contains(name) ? name.toUpperCase() : name.substring(0, 1).toUpperCase() + name.substring(1))
-                                .collect(Collectors.joining(" ")));
+                                .map(s -> NumberUtils.isParsable(s)
+                                        ? ""
+                                        : s.substring(0, 1).toUpperCase() + s.substring(1))
+                                .collect(Collectors.joining(" ")).trim());
+            }
+
+            @Override
+            public void add(String key, String value) {
+                try {
+                    super.add(key, value);
+                } catch (IllegalStateException ignored) {
+                }
             }
         });
         client.accept(new ItemModelProvider(packOutput, modid(), fileHelper) {

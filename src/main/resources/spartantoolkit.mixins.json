@@ -18,6 +18,7 @@
     "WeaponTraitMixin"
   ],
   "client": [
+    "I18nMixin"
   ],
   "injectors": {
     "defaultRequire": 1
