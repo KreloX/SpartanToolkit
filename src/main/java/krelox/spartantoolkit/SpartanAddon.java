@@ -29,6 +29,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryManager;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
@@ -200,7 +201,13 @@ public abstract class SpartanAddon {
     }
 
     protected Map<RegistryObject<WeaponTrait>, String> getTraitDescriptions() {
-        return new HashMap<>();
+        HashMap<RegistryObject<WeaponTrait>, String> map = new HashMap<>();
+        var registry = RegistryManager.ACTIVE.getRegistry(WeaponTraits.REGISTRY_KEY);
+        registry.getEntries().stream()
+                .filter(entry -> entry.getKey().location().getNamespace().equals(modid()))
+                .filter(entry -> entry.getValue() instanceof BetterWeaponTrait)
+                .forEach(entry -> map.put(RegistryObject.create(entry.getKey().location(), registry), ((BetterWeaponTrait) entry.getValue()).getDescription()));
+        return map;
     }
 
     public abstract String modid();

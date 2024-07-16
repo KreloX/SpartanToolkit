@@ -24,6 +24,10 @@ public class BetterWeaponTrait extends WeaponTrait implements IBetterWeaponTrait
         super(typeIn, modIdIn, qualityIn);
     }
 
+    public String getDescription() {
+        return "The author of this trait should provide a description or set it to null";
+    }
+
     @Override
     public float modifyRangedDamageDealt(WeaponMaterial material, float baseDamage, DamageSource source, LivingEntity attacker, LivingEntity victim) {
         if (getMeleeCallback().isPresent()) {
@@ -95,6 +99,7 @@ public class BetterWeaponTrait extends WeaponTrait implements IBetterWeaponTrait
 
     @Override
     protected void addTooltipDescription(ItemStack stack, List<Component> tooltip) {
+        if (getDescription() == null) return;
         String registryName = RegistryManager.FROZEN.getRegistry(WeaponTraits.REGISTRY_KEY).getKey(this).getPath();
         tooltip.add(tooltipIndent().append(Component.translatable(String.format("tooltip.%s.trait.%s.desc", modId, registryName)).withStyle(DESCRIPTION_FORMAT)));
     }
