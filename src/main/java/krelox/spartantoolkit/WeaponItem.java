@@ -5,6 +5,7 @@ import com.oblivioussp.spartanweaponry.api.trait.IActionTraitCallback;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
 import com.oblivioussp.spartanweaponry.item.HeavyCrossbowItem;
 import com.oblivioussp.spartanweaponry.item.LongbowItem;
+import com.oblivioussp.spartanweaponry.util.WeaponType;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
@@ -29,7 +30,7 @@ public interface WeaponItem {
 
     default void triggerFirstEnabledActionTrait(ItemStack stack, Consumer<IActionTraitCallback> consumer) {
         if (getMaterial() instanceof SpartanMaterial material) {
-            material.getBonusTraits().stream()
+            material.getBonusTraits(WeaponType.MELEE).stream()
                     .filter(WeaponTrait::isActionTrait)
                     .filter(trait -> ((IBetterWeaponTrait) trait).isEnabled(getMaterial(), stack))
                     .findFirst()
@@ -40,7 +41,7 @@ public interface WeaponItem {
 
     default <T> T getFirstEnabledActionTraitResult(ItemStack stack, Function<IActionTraitCallback, T> result, Supplier<T> fallback) {
         if (getMaterial() instanceof SpartanMaterial material) {
-            return material.getBonusTraits().stream()
+            return material.getBonusTraits(WeaponType.MELEE).stream()
                     .filter(WeaponTrait::isActionTrait)
                     .filter(trait -> ((IBetterWeaponTrait) trait).isEnabled(getMaterial(), stack))
                     .findFirst()

@@ -3,6 +3,7 @@ package krelox.spartantoolkit;
 import com.oblivioussp.spartanweaponry.api.WeaponMaterial;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
 import com.oblivioussp.spartanweaponry.item.SwordBaseItem;
+import com.oblivioussp.spartanweaponry.util.WeaponType;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,7 +30,7 @@ public interface IBetterWeaponTrait {
     default boolean isEnabled(WeaponMaterial material, ItemStack stack) {
         if (((WeaponTrait) this).isActionTrait() && stack.getItem() instanceof SwordBaseItem item) {
             var traits = new ArrayList<>(item.getAllWeaponTraits());
-            traits.removeAll(material.getBonusTraits());
+            traits.removeAll(material.getBonusTraits(WeaponType.MELEE));
             return traits.stream().filter(trait -> !trait.equals(this)).noneMatch(WeaponTrait::isActionTrait);
         }
         return true;

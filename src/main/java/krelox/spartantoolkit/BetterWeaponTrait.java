@@ -29,6 +29,30 @@ public class BetterWeaponTrait extends WeaponTrait implements IBetterWeaponTrait
     }
 
     @Override
+    public Optional<IMeleeTraitCallback> getMeleeCallback() {
+        if (isMelee) return Optional.of(this);
+        return super.getMeleeCallback();
+    }
+
+    @Override
+    public Optional<IRangedTraitCallback> getRangedCallback() {
+        if (isRanged) return Optional.of(this);
+        return super.getRangedCallback();
+    }
+
+    @Override
+    public Optional<IThrowingTraitCallback> getThrowingCallback() {
+        if (isThrowing) return Optional.of(this);
+        return super.getThrowingCallback();
+    }
+
+    @Override
+    public Optional<IActionTraitCallback> getActionCallback() {
+        if (isAction) return Optional.of(this);
+        return super.getActionCallback();
+    }
+
+    @Override
     public float modifyRangedDamageDealt(WeaponMaterial material, float baseDamage, DamageSource source, LivingEntity attacker, LivingEntity victim) {
         if (getMeleeCallback().isPresent()) {
             return getMeleeCallback().get().modifyDamageDealt(material, baseDamage, source, attacker, victim);
@@ -57,30 +81,6 @@ public class BetterWeaponTrait extends WeaponTrait implements IBetterWeaponTrait
     @Override
     public InteractionResultHolder<ItemStack> use(ItemStack stack, Level level, Player player, InteractionHand hand) {
         return InteractionResultHolder.pass(stack);
-    }
-
-    @Override
-    public Optional<IMeleeTraitCallback> getMeleeCallback() {
-        if (isMelee) return Optional.of(this);
-        return super.getMeleeCallback();
-    }
-
-    @Override
-    public Optional<IRangedTraitCallback> getRangedCallback() {
-        if (isRanged) return Optional.of(this);
-        return super.getRangedCallback();
-    }
-
-    @Override
-    public Optional<IThrowingTraitCallback> getThrowingCallback() {
-        if (isThrowing) return Optional.of(this);
-        return super.getThrowingCallback();
-    }
-
-    @Override
-    public Optional<IActionTraitCallback> getActionCallback() {
-        if (isAction) return Optional.of(this);
-        return super.getActionCallback();
     }
 
     @Override

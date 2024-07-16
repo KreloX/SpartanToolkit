@@ -10,7 +10,6 @@
     "HeavyCrossbowItemMixin",
     "ItemStackMixin",
     "LongbowItemMixin",
-    "ModelGeneratorMixin",
     "SwordBaseItemMixin",
     "ThrowingWeaponItemMixin",
     "VersatileWeaponTraitMixin",

@@ -2,6 +2,7 @@ package krelox.spartantoolkit;
 
 import com.oblivioussp.spartanweaponry.api.IWeaponTraitContainer;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
+import com.oblivioussp.spartanweaponry.util.WeaponType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -27,7 +28,7 @@ public class SpartanToolkit {
             var material = weapon.getMaterial();
 
             if (!(weapon instanceof IWeaponTraitContainer<?> container)) {
-                weapon.triggerEnabledTraits(material.getBonusTraits(), trait ->
+                weapon.triggerEnabledTraits(material.getBonusTraits(WeaponType.RANGED), trait ->
                         ((IBetterWeaponTrait) trait).onRangedHitEntity(material, stack, target, attacker, projectile), stack);
             } else if (!(attacker instanceof Player)) {
                 weapon.triggerEnabledTraits(container.getAllWeaponTraits(), trait -> trait.getMeleeCallback()
@@ -50,7 +51,7 @@ public class SpartanToolkit {
 
         if (!attackerStack.isEmpty() && attackerStack.getItem() instanceof WeaponItem weapon && weapon.isRanged()) {
             var material = weapon.getMaterial();
-            var traits = material.getBonusTraits();
+            var traits = material.getBonusTraits(WeaponType.RANGED);
 
             if (traits == null) return;
 
@@ -63,7 +64,7 @@ public class SpartanToolkit {
         }
         if (!targetStack.isEmpty() && targetStack.getItem() instanceof WeaponItem weapon && weapon.isRanged()) {
             var material = weapon.getMaterial();
-            var traits = material.getBonusTraits();
+            var traits = material.getBonusTraits(WeaponType.RANGED);
 
             if (traits == null) return;
 
