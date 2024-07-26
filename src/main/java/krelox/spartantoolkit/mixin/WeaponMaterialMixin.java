@@ -13,7 +13,6 @@ import java.util.function.Predicate;
 
 @Mixin(WeaponMaterial.class)
 public class WeaponMaterialMixin {
-
     @ModifyArg(
             method = "reload",
             at = @At(

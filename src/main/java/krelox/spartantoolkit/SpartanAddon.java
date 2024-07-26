@@ -57,7 +57,7 @@ public abstract class SpartanAddon {
     }
 
     protected final void registerSpartanWeapon(DeferredRegister<Item> items, SpartanMaterial material, WeaponType type) {
-        String name = material.getMaterialName() + "_" + type.toString().toLowerCase();
+        String name = material.getMaterialName() + "_" + type.name().toLowerCase(Locale.US);
         var item = items.register(name, () -> type.createItem.apply(material));
         getWeaponMap().put(material, type, item);
     }
