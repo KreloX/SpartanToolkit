@@ -16,12 +16,16 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class SpartanMaterial extends WeaponMaterial {
     public final Collection<RegistryObject<WeaponTrait>> traits;
     public final Map<Supplier<Enchantment>, Integer> enchantments;
+    private double attackSpeedModifier;
     private Rarity rarity = Rarity.COMMON;
     private TagKey<Item> planks = ItemTags.PLANKS;
     private TagKey<Item> stick = Tags.Items.RODS_WOODEN;
@@ -30,24 +34,34 @@ public class SpartanMaterial extends WeaponMaterial {
     private Supplier<? extends ItemLike> handle = ModItems.HANDLE;
     private Supplier<? extends ItemLike> pole = ModItems.POLE;
 
-    public SpartanMaterial(String name, String modid, Tier tier,
-                           TagKey<Item> repairMaterial, Collection<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
+    public SpartanMaterial(String name, String modid, Tier tier, TagKey<Item> repairMaterial,
+                           Collection<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
         super(name, modid, tier, repairMaterial, ModWeaponTraitTags.create(new ResourceLocation(modid, name)));
         this.traits = traits;
         this.enchantments = enchantments;
     }
 
     @Deprecated(since = "1.4.0", forRemoval = true)
-    public SpartanMaterial(String name, String modid, Tier tier,
-                           TagKey<Item> repairMaterial, Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
+    public SpartanMaterial(String name, String modid, Tier tier, TagKey<Item> repairMaterial,
+                           Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
         this(name, modid, tier, repairMaterial, (Collection<RegistryObject<WeaponTrait>>) traits, enchantments);
     }
 
     @SafeVarargs
     @SuppressWarnings("unused")
-    public SpartanMaterial(String name, String modid, Tier tier,
-                           TagKey<Item> repairMaterial, RegistryObject<WeaponTrait>... traits) {
+    public SpartanMaterial(String name, String modid, Tier tier, TagKey<Item> repairMaterial,
+                           RegistryObject<WeaponTrait>... traits) {
         this(name, modid, tier, repairMaterial, List.of(traits), Map.of());
+    }
+
+    public double getAttackSpeedModifier() {
+        return attackSpeedModifier;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setAttackSpeedModifier(double attackSpeedModifier) {
+        this.attackSpeedModifier = attackSpeedModifier;
+        return this;
     }
 
     @SuppressWarnings("unused")
