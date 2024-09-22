@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 public class SpartanMaterial extends WeaponMaterial {
     public final Collection<RegistryObject<WeaponTrait>> traits;
     public final Map<Supplier<Enchantment>, Integer> enchantments;
+    private double attackDamageModifier;
     private double attackSpeedModifier;
     private Rarity rarity = Rarity.COMMON;
     private TagKey<Item> planks = ItemTags.PLANKS;
@@ -54,8 +55,10 @@ public class SpartanMaterial extends WeaponMaterial {
         this(name, modid, tier, repairMaterial, List.of(traits), Map.of());
     }
 
-    public double getAttackSpeedModifier() {
-        return attackSpeedModifier;
+    @SuppressWarnings("unused")
+    public SpartanMaterial setAttackDamageModifier(double attackDamageModifier) {
+        this.attackDamageModifier = attackDamageModifier;
+        return this;
     }
 
     @SuppressWarnings("unused")
@@ -104,6 +107,14 @@ public class SpartanMaterial extends WeaponMaterial {
     public SpartanMaterial setPole(Supplier<? extends ItemLike> pole) {
         this.pole = pole;
         return this;
+    }
+
+    public double getAttackDamageModifier() {
+        return attackDamageModifier;
+    }
+
+    public double getAttackSpeedModifier() {
+        return attackSpeedModifier;
     }
 
     public Rarity getRarity() {

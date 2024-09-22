@@ -68,12 +68,14 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
     @Inject(method = "getAttributeModifiers", at = @At("HEAD"), remap = false)
     public void spartantoolkit_getAttributeModifiers(EquipmentSlot slot, ItemStack stack, CallbackInfoReturnable<Multimap<Attribute, AttributeModifier>> cir) {
         ImmutableMultimap.Builder<Attribute, AttributeModifier> mapBuilder = ImmutableMultimap.builder();
-        mapBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", getDirectAttackDamage(), AttributeModifier.Operation.ADDITION));
 
+        double finalAttackDamage = getDirectAttackDamage();
         double finalAttackSpeed = attackSpeed - 4.0D;
         if (getMaterial() instanceof SpartanMaterial material) {
+            finalAttackDamage += material.getAttackDamageModifier();
             finalAttackSpeed += material.getAttackSpeedModifier();
         }
+        mapBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", finalAttackDamage, AttributeModifier.Operation.ADDITION));
         mapBuilder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", finalAttackSpeed, AttributeModifier.Operation.ADDITION));
 
         triggerEnabledTraits(getAllWeaponTraits(), trait -> trait.getMeleeCallback()
