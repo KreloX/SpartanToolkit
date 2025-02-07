@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "spartantoolkit.refmap.json",
   "mixins": [
+    "CommonEventHandlerMixin",
     "ExistingFileHelperMixin",
     "HeavyCrossbowItemMixin",
     "ItemStackMixin",
@@ -16,6 +17,7 @@
     "WeaponTraitMixin"
   ],
   "client": [
+    "I18nMixin"
   ],
   "injectors": {
     "defaultRequire": 1
