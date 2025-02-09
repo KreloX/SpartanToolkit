@@ -101,7 +101,7 @@ public abstract class SpartanAddon {
 
         getTraitDescriptions().forEach((trait, description) -> {
             provider.add("tooltip.%s.trait.%s".formatted(modid(), trait.get().getType()), formatName.apply(trait));
-            provider.add("tooltip.%s.trait.%s.desc".formatted(modid(), trait.get().getType()), description);
+            provider.add("tooltip.%s.trait.%s.desc".formatted(modid(), trait.getId().getPath()), description);
         });
     }
 
