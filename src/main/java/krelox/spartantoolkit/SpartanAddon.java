@@ -80,7 +80,7 @@ public abstract class SpartanAddon {
 
     @SuppressWarnings("unused")
     public static RegistryObject<WeaponTrait> registerTrait(DeferredRegister<WeaponTrait> traitRegister, WeaponTrait trait) {
-        return traitRegister.register(trait.getType(), () -> trait);
+        return traitRegister.register(trait.getType() + (trait.getLevel() == 0 ? "" : "_" + trait.getLevel()), () -> trait);
     }
 
     @SuppressWarnings("unused")
