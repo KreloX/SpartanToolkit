@@ -16,7 +16,7 @@ public class ExistingFileHelperMixin {
             cancellable = true,
             remap = false
     )
-    private void exists(ResourceLocation loc, ExistingFileHelper.IResourceType type, CallbackInfoReturnable<Boolean> cir) {
+    private void spartantoolkit_exists(ResourceLocation loc, ExistingFileHelper.IResourceType type, CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(cir.getReturnValue() || loc.getNamespace().equals(ModSpartanWeaponry.ID));
     }
 }

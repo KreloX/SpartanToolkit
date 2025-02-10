@@ -23,7 +23,7 @@ public abstract class ItemStackMixin implements IForgeItemStack {
             method = "<init>(Lnet/minecraft/world/level/ItemLike;ILnet/minecraft/nbt/CompoundTag;)V",
             at = @At("RETURN")
     )
-    public void init(ItemLike item, int p_41605_, CompoundTag p_41606_, CallbackInfo ci) {
+    public void spartantoolkit_init(ItemLike item, int p_41605_, CompoundTag p_41606_, CallbackInfo ci) {
         if (item instanceof WeaponItem weapon) {
             ModList.get().forEachModContainer((modid, modContainer) -> {
                 if (modContainer.getMod() instanceof SpartanAddon addon) {

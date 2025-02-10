@@ -9,50 +9,149 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
 public class SpartanMaterial extends WeaponMaterial {
-    public final Set<RegistryObject<WeaponTrait>> traits;
+    public final Collection<RegistryObject<WeaponTrait>> traits;
     public final Map<Supplier<Enchantment>, Integer> enchantments;
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "1.1.0", forRemoval = true)
     public final WeaponMaterial material = this;
+    private float attackDamageModifier;
+    private double attackSpeedModifier;
+    private Rarity rarity = Rarity.COMMON;
+    private TagKey<Item> planks = ItemTags.PLANKS;
+    private TagKey<Item> stick = Tags.Items.RODS_WOODEN;
+    private TagKey<Item> string = Tags.Items.STRING;
+    private Supplier<? extends ItemLike> bow = () -> Items.BOW;
+    private Supplier<? extends ItemLike> handle = ModItems.HANDLE;
+    private Supplier<? extends ItemLike> pole = ModItems.POLE;
 
-    public SpartanMaterial(String name, String modid, Tier tier,
-                           TagKey<Item> repairMaterial, Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
+    public SpartanMaterial(String name, String modid, Tier tier, TagKey<Item> repairMaterial,
+                           Collection<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
         super(name, modid, tier, repairMaterial, ModWeaponTraitTags.create(new ResourceLocation(modid, name)));
         this.traits = traits;
         this.enchantments = enchantments;
     }
 
+    @Deprecated(since = "1.3.0", forRemoval = true)
+    public SpartanMaterial(String name, String modid, Tier tier, TagKey<Item> repairMaterial,
+                           Set<RegistryObject<WeaponTrait>> traits, Map<Supplier<Enchantment>, Integer> enchantments) {
+        this(name, modid, tier, repairMaterial, (Collection<RegistryObject<WeaponTrait>>) traits, enchantments);
+    }
+
+    @SafeVarargs
+    @SuppressWarnings("unused")
+    public SpartanMaterial(String name, String modid, Tier tier, TagKey<Item> repairMaterial,
+                           RegistryObject<WeaponTrait>... traits) {
+        this(name, modid, tier, repairMaterial, List.of(traits), Map.of());
+    }
+
+    @Override
+    public float getAttackDamageBonus() {
+        return super.getAttackDamageBonus() + attackDamageModifier;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setAttackDamageModifier(float attackDamageModifier) {
+        this.attackDamageModifier = attackDamageModifier;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setAttackSpeedModifier(double attackSpeedModifier) {
+        this.attackSpeedModifier = attackSpeedModifier;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setRarity(Rarity rarity) {
+        this.rarity = rarity;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setPlanks(TagKey<Item> planks) {
+        this.planks = planks;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setStick(TagKey<Item> stick) {
+        this.stick = stick;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setString(TagKey<Item> string) {
+        this.string = string;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setBow(Supplier<? extends ItemLike> bow) {
+        this.bow = bow;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setHandle(Supplier<? extends ItemLike> handle) {
+        this.handle = handle;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public SpartanMaterial setPole(Supplier<? extends ItemLike> pole) {
+        this.pole = pole;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public float getAttackDamageModifier() {
+        return attackDamageModifier;
+    }
+
+    @SuppressWarnings("unused")
+    public double getAttackSpeedModifier() {
+        return attackSpeedModifier;
+    }
+
+    @SuppressWarnings("unused")
+    public Rarity getRarity() {
+        return rarity;
+    }
+
     public TagKey<Item> getPlanks() {
-        return ItemTags.PLANKS;
+        return planks;
     }
 
     public TagKey<Item> getStick() {
-        return Tags.Items.RODS_WOODEN;
+        return stick;
     }
 
     public TagKey<Item> getString() {
-        return Tags.Items.STRING;
+        return string;
     }
 
     public ItemLike getBow() {
-        return Items.BOW;
+        return bow.get();
     }
 
     public ItemLike getHandle() {
-        return ModItems.HANDLE.get();
+        return handle.get();
     }
 
     public ItemLike getPole() {
-        return ModItems.POLE.get();
+        return pole.get();
     }
 }

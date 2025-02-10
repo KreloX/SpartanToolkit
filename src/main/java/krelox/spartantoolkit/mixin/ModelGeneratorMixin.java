@@ -14,7 +14,7 @@ public class ModelGeneratorMixin {
             index = 1,
             remap = false
     )
-    private String injectTexture(String texture) {
+    private String spartantoolkit_injectTexture(String texture) {
         if (!texture.contains("item/coating/")) return texture;
         return ModSpartanWeaponry.ID + ":" + texture;
     }
