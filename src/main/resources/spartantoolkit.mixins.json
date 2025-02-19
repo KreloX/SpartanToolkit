@@ -6,9 +6,10 @@
   "refmap": "spartantoolkit.refmap.json",
   "mixins": [
     "CommonEventHandlerMixin",
+    "ConditionalShapedRecipeBuilderResultMixin",
     "ExistingFileHelperMixin",
     "HeavyCrossbowItemMixin",
-    "ItemStackMixin",
+    "ItemDisplayBuilderMixin",
     "LongbowItemMixin",
     "SwordBaseItemMixin",
     "ThrowingWeaponItemMixin",
