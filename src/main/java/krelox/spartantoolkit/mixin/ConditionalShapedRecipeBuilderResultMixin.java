@@ -38,7 +38,7 @@ public class ConditionalShapedRecipeBuilderResultMixin {
             });
             if (!listTag.isEmpty()) {
                 resultJson.addProperty("type", "minecraft:item_nbt");
-                resultJson.addProperty("nbt", listTag.toString());
+                resultJson.addProperty("nbt", "{Enchantments:%s}".formatted(listTag.toString()));
             }
         }
         return resultJson;
