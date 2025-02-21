@@ -33,9 +33,9 @@ public class CommonEventHandlerMixin {
             remap = false
     )
     private static boolean spartantoolkit_onLivingHurtTaken(Optional<IMeleeTraitCallback> opt, LivingHurtEvent event) {
-        var target = (LivingEntity) event.getEntity();
+        var target = event.getEntity();
         var targetStack = target.getMainHandItem();
-        var container = (IWeaponTraitContainer<?>) targetStack.getItem();
+        if (!(targetStack.getItem() instanceof IWeaponTraitContainer<?> container)) return false;
         return opt.isPresent() && ((IBetterWeaponTrait) opt.get()).isEnabled(container.getMaterial(), targetStack);
     }
 }
