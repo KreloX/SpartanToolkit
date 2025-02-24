@@ -146,7 +146,10 @@ public abstract class SpartanAddon {
             @Override
             protected void addTranslations() {
                 SpartanAddon.this.addTranslations(this, registryObject ->
-                        Arrays.stream(registryObject.getId().getPath().replace("_heavy", "-Strengthened_heavy").split("_"))
+                        Arrays.stream(registryObject.getId().getPath()
+                                        .replace("_heavy", "-Strengthened_heavy")
+                                        .replace("_longbow", "-Strengthened_longbow")
+                                        .split("_"))
                                 .map(s -> NumberUtils.isParsable(s)
                                         ? ""
                                         : s.substring(0, 1).toUpperCase() + s.substring(1))
