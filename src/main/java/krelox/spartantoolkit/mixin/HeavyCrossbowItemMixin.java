@@ -84,7 +84,6 @@ public class HeavyCrossbowItemMixin extends CrossbowItem implements WeaponItem {
         return material;
     }
 
-    @Deprecated
     private HeavyCrossbowItemMixin(Properties properties) {
         super(properties);
     }

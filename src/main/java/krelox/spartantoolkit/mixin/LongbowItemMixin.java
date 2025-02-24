@@ -82,7 +82,6 @@ public class LongbowItemMixin extends BowItem implements WeaponItem {
         return material;
     }
 
-    @Deprecated
     public LongbowItemMixin(Properties properties) {
         super(properties);
     }

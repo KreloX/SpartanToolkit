@@ -1,5 +1,6 @@
 package krelox.spartantoolkit;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
@@ -11,6 +12,7 @@ public class WeaponMap extends LinkedHashMap<Pair<SpartanMaterial, WeaponType>, 
         return get(Pair.of(material, type));
     }
 
+    @CanIgnoreReturnValue
     public RegistryObject<Item> put(SpartanMaterial material, WeaponType type, RegistryObject<Item> item) {
         return put(Pair.of(material, type), item);
     }

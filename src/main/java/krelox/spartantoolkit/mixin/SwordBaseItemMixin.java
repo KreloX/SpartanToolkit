@@ -273,7 +273,6 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
         triggerEnabledTraits(traits, consumer, stack);
     }
 
-    @Deprecated
     private SwordBaseItemMixin(Tier tier, int attackDamage, float attackSpeed, Properties properties) {
         super(tier, attackDamage, attackSpeed, properties);
     }

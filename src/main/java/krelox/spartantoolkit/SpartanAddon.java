@@ -58,7 +58,7 @@ public abstract class SpartanAddon {
 
     protected final void registerSpartanWeapon(DeferredRegister<Item> items, SpartanMaterial material, WeaponType type) {
         String name = material.getMaterialName() + "_" + type.name().toLowerCase(Locale.US);
-        var item = items.register(name, () -> type.createItem.apply(material));
+        RegistryObject<Item> item = items.register(name, () -> type.createItem.apply(material));
         getWeaponMap().put(material, type, item);
     }
 
@@ -118,7 +118,7 @@ public abstract class SpartanAddon {
 
     @SuppressWarnings("unused")
     protected void registerModels(ItemModelProvider provider, ModelGenerator generator) {
-        getWeaponMap().forEach((key, item) -> key.second().createModel.apply(generator, item.get()));
+        getWeaponMap().forEach((pair, item) -> pair.second().createModel.apply(generator, item.get()));
     }
 
     @SuppressWarnings("unused")
@@ -130,7 +130,7 @@ public abstract class SpartanAddon {
     }
 
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-        getWeaponMap().forEach((key, item) -> key.second().recipe.accept(getWeaponMap(), consumer, key.first()));
+        getWeaponMap().forEach((pair, item) -> pair.second().recipe.accept(getWeaponMap(), consumer, pair.first()));
     }
 
     public void gatherData(GatherDataEvent event) {
@@ -184,7 +184,7 @@ public abstract class SpartanAddon {
         server.accept(new ItemTagsProvider(packOutput, lookupProvider, blockTags.contentsGetter(), modid(), fileHelper) {
             @Override
             protected void addTags(@NotNull HolderLookup.Provider provider) {
-                getWeaponMap().forEach((key, item) -> tag(key.second().tag).add(item.get()));
+                getWeaponMap().forEach((pair, item) -> tag(pair.second().tag).add(item.get()));
                 addItemTags(this, this::tag);
             }
         });
@@ -201,7 +201,7 @@ public abstract class SpartanAddon {
     }
 
     protected Map<RegistryObject<WeaponTrait>, String> getTraitDescriptions() {
-        HashMap<RegistryObject<WeaponTrait>, String> map = new HashMap<>();
+        var map = new HashMap<RegistryObject<WeaponTrait>, String>();
         var registry = RegistryManager.ACTIVE.getRegistry(WeaponTraits.REGISTRY_KEY);
         registry.getEntries().stream()
                 .filter(entry -> entry.getKey().location().getNamespace().equals(modid()))

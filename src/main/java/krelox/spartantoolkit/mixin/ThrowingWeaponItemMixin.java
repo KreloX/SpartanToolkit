@@ -123,7 +123,6 @@ public abstract class ThrowingWeaponItemMixin extends Item implements WeaponItem
         return optional.isPresent() && optional.get().isEnabled(getMaterial(), stack);
     }
 
-    @Deprecated
     private ThrowingWeaponItemMixin(Properties properties) {
         super(properties);
     }

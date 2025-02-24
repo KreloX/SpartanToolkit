@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(ConditionalShapedRecipeBuilder.Result.class)
 public class ConditionalShapedRecipeBuilderResultMixin {
-    @Shadow
+    @Shadow(remap = false)
     @Final
     private Item result;
 
@@ -24,7 +24,8 @@ public class ConditionalShapedRecipeBuilderResultMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/google/gson/JsonObject;addProperty(Ljava/lang/String;Ljava/lang/String;)V",
-                    ordinal = 1
+                    ordinal = 1,
+                    remap = false
             ),
             ordinal = 2
     )

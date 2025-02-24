@@ -13,7 +13,6 @@ public class VersatileWeaponTraitMixin extends WeaponTrait {
         return enchantIn.equals(Enchantments.BLOCK_EFFICIENCY) || enchantIn.equals(Enchantments.BLOCK_FORTUNE) || super.isEnchantmentCompatible(enchantIn);
     }
 
-    @Deprecated
     private VersatileWeaponTraitMixin(String typeIn, String modIdIn, TraitQuality qualityIn) {
         super(typeIn, modIdIn, qualityIn);
     }
