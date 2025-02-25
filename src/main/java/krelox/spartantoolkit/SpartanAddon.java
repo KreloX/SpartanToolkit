@@ -197,6 +197,12 @@ public abstract class SpartanAddon {
                 buildCraftingRecipes(consumer);
             }
         });
+        server.accept(new WeaponAttributeProvider(packOutput, fileHelper) {
+            @Override
+            protected void registerAttributes() {
+                spartanAttributes(getWeaponMap());
+            }
+        });
     }
 
     protected Set<Pair<SpartanMaterial, WeaponType>> getBlacklist() {
