@@ -3,6 +3,7 @@ package krelox.spartantoolkit.mixin;
 import com.oblivioussp.spartanweaponry.api.WeaponMaterial;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
 import com.oblivioussp.spartanweaponry.item.LongbowItem;
+import com.oblivioussp.spartanweaponry.util.WeaponType;
 import krelox.spartantoolkit.IBetterWeaponTrait;
 import krelox.spartantoolkit.SpartanMaterial;
 import krelox.spartantoolkit.WeaponItem;
@@ -47,13 +48,21 @@ public class LongbowItemMixin extends BowItem implements WeaponItem {
 
     @Redirect(
             method = "releaseUsing",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V"
-            )
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V")
     )
     private void spartantoolkit_releaseUsing(Optional<IBetterWeaponTrait> optional, Consumer<IBetterWeaponTrait> action, ItemStack stack) {
         optional.filter(trait -> trait.isEnabled(material, stack)).ifPresent(action);
+    }
+
+    @Redirect(
+            method = "appendHoverText",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/oblivioussp/spartanweaponry/api/WeaponMaterial;hasAnyBonusTraits(Lcom/oblivioussp/spartanweaponry/util/WeaponType;)Z"
+            )
+    )
+    private boolean spartantoolkit_appendHoverText(WeaponMaterial instance, WeaponType type) {
+        return material.getBonusTraits(type).stream().anyMatch(trait -> ((IBetterWeaponTrait) trait).isEnabled(material, getDefaultInstance()));
     }
 
     @Inject(method = "appendHoverText", at = @At("HEAD"))

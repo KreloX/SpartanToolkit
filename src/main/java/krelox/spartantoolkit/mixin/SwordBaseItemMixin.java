@@ -28,7 +28,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -87,21 +86,23 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
 
     @Redirect(
             method = "inventoryTick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"
-            )
+            at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V")
     )
     private void spartantoolkit_inventoryTick(List<WeaponTrait> traits, Consumer<WeaponTrait> consumer, ItemStack stack) {
         triggerEnabledTraits(traits, consumer, stack);
     }
 
     @Redirect(
+            method = "appendHoverText",
+            at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z")
+    )
+    private boolean spartantoolkit_appendHoverText(List<WeaponTrait> traits, ItemStack stack) {
+        return traits.stream().noneMatch(trait -> ((IBetterWeaponTrait) trait).isEnabled(getMaterial(), stack));
+    }
+
+    @Redirect(
             method = "hurtEnemy",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"
-            )
+            at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V")
     )
     private void spartantoolkit_hurtEnemy(List<WeaponTrait> traits, Consumer<WeaponTrait> consumer, ItemStack stack) {
         triggerEnabledTraits(traits, consumer, stack);
@@ -109,10 +110,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
 
     @Redirect(
             method = "useOn",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Optional;isPresent()Z"
-            )
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;isPresent()Z")
     )
     private boolean spartantoolkit_useOn(Optional<IBetterWeaponTrait> optional, UseOnContext context) {
         if (optional.isEmpty()) {
@@ -137,10 +135,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
 
     @Redirect(
             method = "use",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Optional;isPresent()Z"
-            )
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;isPresent()Z")
     )
     private boolean spartantoolkit_use(Optional<IBetterWeaponTrait> optional, Level level, Player player, InteractionHand hand) {
         if (optional.isEmpty()) {
@@ -166,10 +161,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
 
     @Redirect(
             method = "releaseUsing",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V"
-            )
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V")
     )
     private void spartantoolkit_releaseUsing(Optional<IBetterWeaponTrait> optional, Consumer<IBetterWeaponTrait> action,
                                              ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
@@ -179,10 +171,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
 
     @Redirect(
             method = "onUseTick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V"
-            )
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V")
     )
     private void spartantoolkit_onUseTick(Optional<IBetterWeaponTrait> optional, Consumer<IBetterWeaponTrait> action,
                                           Level levelIn, LivingEntity player, ItemStack stack, int count) {
@@ -192,10 +181,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
 
     @Redirect(
             method = "getUseDuration",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Optional;isPresent()Z"
-            )
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;isPresent()Z")
     )
     private boolean spartantoolkit_getUseDuration(Optional<IBetterWeaponTrait> optional, ItemStack stack) {
         return optional.isPresent() && optional.get().isEnabled(getMaterial(), stack);
@@ -216,10 +202,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
 
     @Redirect(
             method = "getUseAnimation",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Optional;isPresent()Z"
-            )
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;isPresent()Z")
     )
     private boolean spartantoolkit_getUseAnimation(Optional<IBetterWeaponTrait> optional, ItemStack stack) {
         return optional.isPresent() && optional.get().isEnabled(getMaterial(), stack);
@@ -240,10 +223,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
 
     @Redirect(
             method = "doesSneakBypassUse",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Optional;isPresent()Z"
-            ),
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;isPresent()Z"),
             remap = false
     )
     private boolean spartantoolkit_doesSneakBypassUse(Optional<IBetterWeaponTrait> optional, ItemStack stack,
@@ -267,10 +247,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
 
     @Redirect(
             method = "onCraftedBy",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V"
-            )
+            at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V")
     )
     private void spartantoolkit_onCraftedBy(List<WeaponTrait> traits, Consumer<WeaponTrait> consumer, ItemStack stack) {
         triggerEnabledTraits(traits, consumer, stack);
@@ -278,7 +255,7 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
 
     @Inject(method = "canApplyAtEnchantingTable", at = @At(value = "RETURN", ordinal = 2), cancellable = true, remap = false)
     private void spartantoolkit_canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment, CallbackInfoReturnable<Boolean> cir) {
-        if (enchantment.category.equals(EnchantmentCategory.DIGGER) && ForgeRegistries.ITEMS.getKey(stack.getItem()).getPath().contains("battleaxe")) {
+        if (enchantment.category.equals(EnchantmentCategory.DIGGER) && stack.getItem().toString().endsWith("battleaxe")) {
             cir.setReturnValue(true);
         }
     }

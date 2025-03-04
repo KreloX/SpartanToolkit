@@ -4,6 +4,7 @@ import com.oblivioussp.spartanweaponry.api.WeaponMaterial;
 import com.oblivioussp.spartanweaponry.api.trait.WeaponTrait;
 import com.oblivioussp.spartanweaponry.item.HeavyCrossbowItem;
 import com.oblivioussp.spartanweaponry.util.Defaults;
+import com.oblivioussp.spartanweaponry.util.WeaponType;
 import krelox.spartantoolkit.IBetterWeaponTrait;
 import krelox.spartantoolkit.SpartanMaterial;
 import krelox.spartantoolkit.WeaponItem;
@@ -48,14 +49,22 @@ public class HeavyCrossbowItemMixin extends CrossbowItem implements WeaponItem {
 
     @Redirect(
             method = "spawnProjectile",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V"
-            ),
+            at = @At(value = "INVOKE", target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V"),
             remap = false
     )
     private void spartantoolkit_spawnProjectile(Optional<IBetterWeaponTrait> optional, Consumer<IBetterWeaponTrait> action, ItemStack crossbow) {
         optional.filter(trait -> trait.isEnabled(material, crossbow)).ifPresent(action);
+    }
+
+    @Redirect(
+            method = "appendHoverText",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/oblivioussp/spartanweaponry/api/WeaponMaterial;hasAnyBonusTraits(Lcom/oblivioussp/spartanweaponry/util/WeaponType;)Z"
+            )
+    )
+    private boolean spartantoolkit_appendHoverText(WeaponMaterial material, WeaponType type) {
+        return material.getBonusTraits(type).stream().anyMatch(trait -> ((IBetterWeaponTrait) trait).isEnabled(material, getDefaultInstance()));
     }
 
     @Inject(method = "getFullLoadTicks", at = @At("HEAD"), remap = false)
