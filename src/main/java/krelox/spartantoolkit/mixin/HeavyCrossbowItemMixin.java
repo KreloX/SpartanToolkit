@@ -60,7 +60,8 @@ public class HeavyCrossbowItemMixin extends CrossbowItem implements WeaponItem {
             method = "appendHoverText",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/oblivioussp/spartanweaponry/api/WeaponMaterial;hasAnyBonusTraits(Lcom/oblivioussp/spartanweaponry/util/WeaponType;)Z"
+                    target = "Lcom/oblivioussp/spartanweaponry/api/WeaponMaterial;hasAnyBonusTraits(Lcom/oblivioussp/spartanweaponry/util/WeaponType;)Z",
+                    remap = false
             )
     )
     private boolean spartantoolkit_appendHoverText(WeaponMaterial material, WeaponType type) {
