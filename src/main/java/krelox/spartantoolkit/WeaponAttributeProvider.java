@@ -23,7 +23,7 @@ public abstract class WeaponAttributeProvider implements DataProvider {
 
     protected abstract void registerAttributes();
 
-    public WeaponAttributeProvider(PackOutput output, ExistingFileHelper fileHelper) {
+    protected WeaponAttributeProvider(PackOutput output, ExistingFileHelper fileHelper) {
         attributePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "weapon_attributes");
         Preconditions.checkNotNull(output);
         Preconditions.checkNotNull(fileHelper);
@@ -31,6 +31,7 @@ public abstract class WeaponAttributeProvider implements DataProvider {
     }
 
     public void spartanAttributes(ResourceLocation location, WeaponType type) {
+        if (type == WeaponType.BOOMERANG || type == WeaponType.HEAVY_CROSSBOW || type == WeaponType.LONGBOW) return;
         var attributes = new JsonObject();
         attributes.addProperty("parent", ModSpartanWeaponry.ID + ":base/" + type.name().toLowerCase(Locale.US));
         existingFileHelper.trackGenerated(location, WEAPON_ATTRIBUTES);
@@ -53,7 +54,7 @@ public abstract class WeaponAttributeProvider implements DataProvider {
         return generateAll(cache);
     }
 
-    protected CompletableFuture<?> generateAll(CachedOutput cache) {
+    protected CompletableFuture<Void> generateAll(CachedOutput cache) {
         var futures = new CompletableFuture[generatedAttributes.size()];
         int i = 0;
 
