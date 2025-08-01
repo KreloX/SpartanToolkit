@@ -134,7 +134,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:$minecraft_version-$forge_version"
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
-    implementation fg.deobf("maven.modrinth:spartan-weaponry:$spartan_weaponry_version")
+    implementation fg.deobf("maven.modrinth:spartan-weaponry:$minecraft_version-$spartan_weaponry_version")
 }
 
 tasks.withType(ProcessResources).configureEach {
