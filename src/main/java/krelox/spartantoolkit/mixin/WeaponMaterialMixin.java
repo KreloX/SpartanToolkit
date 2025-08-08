@@ -54,7 +54,7 @@ public abstract class WeaponMaterialMixin {
 
     @Inject(
             method = "addTraitsToTooltip(Lnet/minecraft/world/item/ItemStack;Lcom/oblivioussp/spartanweaponry/util/WeaponType;Ljava/util/List;Z)V",
-            at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER),
+            at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", ordinal = 1, shift = At.Shift.AFTER),
             remap = false
     )
     private void spartantoolkit_addTraitsToTooltip(ItemStack stack, WeaponType type, List<Component> tooltip, boolean isShiftPressed, CallbackInfo ci) {

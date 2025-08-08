@@ -13,7 +13,6 @@
     "LongbowItemMixin",
     "SwordBaseItemMixin",
     "ThrowingWeaponItemMixin",
-    "VersatileWeaponTraitMixin",
     "WeaponMaterialMixin",
     "WeaponTraitMixin"
   ],

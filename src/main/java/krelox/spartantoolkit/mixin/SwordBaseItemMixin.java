@@ -24,8 +24,6 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import org.spongepowered.asm.mixin.Mixin;
@@ -251,13 +249,6 @@ public abstract class SwordBaseItemMixin extends SwordItem implements WeaponItem
     )
     private void spartantoolkit_onCraftedBy(List<WeaponTrait> traits, Consumer<WeaponTrait> consumer, ItemStack stack) {
         triggerEnabledTraits(traits, consumer, stack);
-    }
-
-    @Inject(method = "canApplyAtEnchantingTable", at = @At(value = "RETURN", ordinal = 2), cancellable = true, remap = false)
-    private void spartantoolkit_canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment, CallbackInfoReturnable<Boolean> cir) {
-        if (enchantment.category.equals(EnchantmentCategory.DIGGER) && stack.getItem().toString().endsWith("battleaxe")) {
-            cir.setReturnValue(true);
-        }
     }
 
     private SwordBaseItemMixin(Tier tier, int attackDamage, float attackSpeed, Properties properties) {
